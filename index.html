@@ -1,11 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-</head>
-<body>
-    
-</body>
+    <link rel="stylesheet" href="styles/styles.css" />
+  </head>
+  <body onload="onInit()">
+    <div class="main-layout">
+      <nav class="navbar">
+        <li class="logo">LOGO</li>
+        <li>Gallery</li>
+        <li>About</li>
+      </nav>
+
+      <section class="gallery"></section>
+
+      <section class="editor hidden">
+        <div class="canvas-container">
+          <canvas width="200" height="200"></canvas>
+        </div>
+        <aside class="controls">
+          <input
+            type="text"
+            name=""
+            id=""
+            placeholder="Enter text"
+            oninput="onTextChange(event.target)"
+          />
+        </aside>
+      </section>
+    </div>
+    <script src="js/services/util-service.js"></script>
+    <script src="js/services/meme-service.js"></script>
+    <script src="js/memeController.js"></script>
+    <script src="js/galleryController.js"></script>
+  </body>
 </html>

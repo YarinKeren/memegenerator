@@ -1,0 +1,14 @@
+.canvas-container {
+  width: 100%; /* or any desired width */
+  max-width: 800px; /* optional: limit the maximum width */
+  margin: 0 auto; /* center the container */
+  margin: 10px auto;
+  border: 1px solid black;
+}
+
+canvas {
+  width: 100%; /* canvas width is a percentage of the container */
+  height: auto; /* let the height adjust based on aspect ratio */
+  background-color: white;
+  border: 1px solid black;
+}

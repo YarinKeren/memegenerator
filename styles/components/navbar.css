@@ -1,0 +1,12 @@
+.navbar {
+  display: grid;
+  grid-auto-flow: column;
+
+  width: 100%;
+  background-color: #19a59f;
+  list-style-type: none;
+}
+
+.navbar .logo {
+  /* flex: 1; */
+}
