@@ -4,9 +4,17 @@ let gCtx
 function onMemeInit() {
   gElCanvas = getEl('canvas')
   gCtx = gElCanvas.getContext('2d')
+  toggleView()
   addListeners()
   renderMeme()
   resizeCanvas()
+}
+
+function toggleView() {
+  const gallery = getEl('.gallery')
+  gallery.classList.add('hidden')
+  const elEditor = getEl('.editor')
+  elEditor.classList.remove('hidden')
 }
 
 function addListeners() {
@@ -14,33 +22,51 @@ function addListeners() {
     resizeCanvas()
     renderMeme()
   })
+  gElCanvas.addEventListener('click', (event) => {
+    onLineClick(event)
+  })
+}
+
+function onLineClick({ offsetX, offsetY }) {
+  const meme = getMeme()
+
+  meme.lines.forEach((line, i) => {
+    const textWidth = gCtx.measureText(line.txt).width
+    const textHeight = line.size
+
+    if (
+      offsetX >= line.x - textWidth / 2 &&
+      offsetX <= line.x + textWidth / 2 &&
+      offsetY >= line.y - textHeight / 2 &&
+      offsetY <= line.y + textHeight / 2
+    ) {
+      meme.selectedLineIdx = i
+      renderMeme()
+    }
+  })
 }
 
 function renderMeme() {
   const meme = getMeme()
+
   const elImg = new Image()
   const imgUrl = getImgUrlByIdx(meme.selectedImgIdx)
   elImg.src = imgUrl
+
   elImg.onload = () => {
     coverCanvasWithImg(elImg)
 
     meme.lines.forEach((line, i) => {
-      const textX = gElCanvas.width / 2
-      const textY = (gElCanvas.height / (meme.lines.length + 1)) * (i + 1)
-
+      line.x = gElCanvas.width / 2
+      line.y = (gElCanvas.height / (meme.lines.length + 1)) * (i + 1)
       const isSelected = i === meme.selectedLineIdx
 
-      drawText(line, line.txt, textX, textY, isSelected)
+      drawText(line, isSelected)
     })
   }
 
   const elTextInput = getEl('.text-input')
   elTextInput.value = meme.lines[meme.selectedLineIdx].txt
-
-  const gallery = getEl('.gallery')
-  gallery.classList.add('hidden')
-  const elEditor = getEl('.editor')
-  elEditor.classList.remove('hidden')
 }
 
 function coverCanvasWithImg(elImg) {
@@ -55,19 +81,20 @@ function resizeCanvas() {
   gElCanvas.height = elContainer.offsetHeight
 }
 
-function drawText(line, text, x, y, isSelected) {
-  gCtx.lineWidth = 1
-  gCtx.strokeStyle = 'white'
+function drawText(line, isSelected) {
+  gCtx.lineWidth = 3
+  gCtx.strokeStyle = 'black'
   gCtx.textAlign = 'center'
   gCtx.textBaseline = 'middle'
 
-  const textWidth = gCtx.measureText(text).width
+  let textWidth = gCtx.measureText(line.txt).width
+  if (gMeme.selectedLineIdx === 0) textWidth *= 2.7
 
   if (isSelected) {
     gCtx.fillStyle = 'rgba(181, 181, 181, 0.7)'
     gCtx.fillRect(
-      x - textWidth / 2 - 5,
-      y - line.size / 2,
+      line.x - textWidth / 2 - 5,
+      line.y - line.size / 2,
       textWidth + 10,
       line.size
     )
@@ -78,8 +105,8 @@ function drawText(line, text, x, y, isSelected) {
     gCtx.fillStyle = line.color
   }
 
-  gCtx.strokeText(text, x, y)
-  gCtx.fillText(text, x, y)
+  gCtx.strokeText(line.txt, line.x, line.y)
+  gCtx.fillText(line.txt, line.x, line.y)
 }
 
 function onTextChange({ value }) {

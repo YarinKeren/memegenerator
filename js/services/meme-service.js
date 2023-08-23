@@ -4,14 +4,14 @@ let gMeme = {
   selectedLineIdx: 0,
   lines: [
     {
-      txt: 'I sometimes eat Falafel',
+      txt: 'I dont use jQuery',
       size: 30,
-      color: 'black',
+      color: 'white',
     },
     {
       txt: 'I dont use jQuery',
       size: 30,
-      color: 'black',
+      color: 'white',
     },
   ],
 }

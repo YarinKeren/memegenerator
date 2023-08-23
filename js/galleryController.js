@@ -15,5 +15,4 @@ function onImgSelect(elImg) {
   const imagePath = elImg.src.substring(startIndex)
   setImg(imagePath)
   onMemeInit()
-  //   renderMeme()
 }

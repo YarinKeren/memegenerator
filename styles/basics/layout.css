@@ -17,3 +17,10 @@
   grid-auto-flow: column;
   margin: 10px 10px;
 }
+
+/* GALLERY LAYOUT */
+
+.gallery {
+  display: grid;
+  grid-auto-flow: column;
+}

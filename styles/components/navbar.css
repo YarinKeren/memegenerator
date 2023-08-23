@@ -1,14 +1,32 @@
 .navbar {
   display: grid;
-  grid-auto-flow: column;
+  /* grid-auto-flow: column; */
+  grid-template-columns: 4fr 2fr 2fr;
 
-  margin-top: 10px;
+  place-items: center;
+
+  margin: 10px 0px;
 
   width: 100%;
-  background-color: #19a59f;
+  background: rgb(15, 155, 179);
+  background: linear-gradient(
+    90deg,
+    rgba(15, 155, 179, 1) 0%,
+    rgba(33, 172, 145, 1) 57%,
+    rgba(48, 187, 115, 1) 100%
+  );
   list-style-type: none;
+
+  border-radius: 30px;
+  color: aliceblue;
 }
 
 .navbar .logo {
-  /* flex: 1; */
+  margin-right: 150px;
+}
+.navbar .about-link {
+  place-self: center start;
+}
+.navbar .gallery-link {
+  margin-left: 50px;
 }
