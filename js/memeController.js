@@ -25,6 +25,20 @@ function addListeners() {
   gElCanvas.addEventListener('click', (event) => {
     onLineClick(event)
   })
+  getEl('.font-dropdown').addEventListener('change', (event) => {
+    onChangeFont(event.target)
+  })
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+      moveLine(event.key === 'ArrowUp' ? -1 : 1) // Move line up or down
+    }
+  })
+}
+
+function moveLine(direction) {
+  const selectedLine = getSelectedLine()
+  selectedLine.y += direction * 10
+  renderMeme()
 }
 
 function onLineClick({ offsetX, offsetY }) {
@@ -57,8 +71,11 @@ function renderMeme() {
     coverCanvasWithImg(elImg)
 
     meme.lines.forEach((line, i) => {
-      line.x = gElCanvas.width / 2
-      line.y = (gElCanvas.height / (meme.lines.length + 1)) * (i + 1)
+      if (!line.x || !line.y) {
+        line.x = gElCanvas.width / 2
+        line.y =
+          (gElCanvas.height / (meme.lines.length + 1)) * (i + 1) + line.size / 2
+      }
       const isSelected = i === meme.selectedLineIdx
 
       drawText(line, isSelected)
@@ -66,7 +83,9 @@ function renderMeme() {
   }
 
   const elTextInput = getEl('.text-input')
-  elTextInput.value = meme.lines[meme.selectedLineIdx].txt
+  if (meme.lines.length && meme.lines[meme.selectedLineIdx])
+    elTextInput.value = meme.lines[meme.selectedLineIdx].txt || ''
+  // else elTextInput.value = ''
 }
 
 function coverCanvasWithImg(elImg) {
@@ -84,27 +103,38 @@ function resizeCanvas() {
 function drawText(line, isSelected) {
   gCtx.lineWidth = 3
   gCtx.strokeStyle = 'black'
-  gCtx.textAlign = 'center'
+  gCtx.textAlign = line.align
   gCtx.textBaseline = 'middle'
+  const textHeight = 30
+  const padding = 5
 
   let textWidth = gCtx.measureText(line.txt).width
   if (gMeme.selectedLineIdx === 0) textWidth *= 2.7
 
   if (isSelected) {
-    gCtx.fillStyle = 'rgba(181, 181, 181, 0.7)'
-    gCtx.fillRect(
-      line.x - textWidth / 2 - 5,
-      line.y - line.size / 2,
-      textWidth + 10,
-      line.size
+    let x = line.x
+    if (line.align === 'center') {
+      x = gElCanvas.width / 2 - textWidth / 2
+    } else if (line.align === 'right') {
+      x = gElCanvas.width / 2 - textWidth
+    }
+    gCtx.beginPath()
+    gCtx.rect(
+      x - padding,
+      line.y - textHeight + padding,
+      textWidth + 2 * padding,
+      textHeight + 2 * padding + 10
     )
-    gCtx.font = `${line.size}px Impact`
+    gCtx.strokeStyle = 'red'
+    gCtx.lineWidth = 1
+    gCtx.stroke()
+    gCtx.strokeStyle = 'black'
+    gCtx.font = `${line.size}px ${line.font}`
     gCtx.fillStyle = line.color
   } else {
-    gCtx.font = `${line.size}px Impact`
+    gCtx.font = `${line.size}px ${line.font}`
     gCtx.fillStyle = line.color
   }
-
   gCtx.strokeText(line.txt, line.x, line.y)
   gCtx.fillText(line.txt, line.x, line.y)
 }
@@ -144,5 +174,20 @@ function onAddLine() {
 
 function onSwitchLine() {
   switchLineIdx()
+  renderMeme()
+}
+
+function onDeleteLine() {
+  deleteLine()
+  renderMeme()
+}
+
+function onAlign(allignment) {
+  setAlignment(allignment)
+  renderMeme()
+}
+
+function onChangeFont({ value }) {
+  setLineFont(value)
   renderMeme()
 }

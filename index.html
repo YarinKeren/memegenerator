@@ -17,15 +17,28 @@
         <li class="gallery-link">Gallery</li>
         <li class="about-link">About</li>
       </nav>
-      <section class="gallery"></section>
+
+      <section class="gallery">
+        <div class="gallery-header">
+          <form class="form">
+            <input type="search" placeholder="Search" class="search-field" />
+            <button type="submit" class="search-button">
+              <i
+                class="fa-solid fa-magnifying-glass fa-xl"
+                style="color: #00c795"
+              ></i>
+            </button>
+          </form>
+          <span class="search-words">Funny Animal Man Women Cosmic Smile</span>
+        </div>
+        <article class="gallery-body"></article>
+      </section>
 
       <section class="editor hidden">
         <div class="editor-layout">
-          <article class="meme-area">
-            <div class="canvas-container">
-              <canvas width="200" height="200"></canvas>
-            </div>
-          </article>
+          <div class="canvas-container">
+            <canvas width="200" height="200"></canvas>
+          </div>
 
           <article class="controls">
             <input
@@ -35,39 +48,68 @@
               oninput="onTextChange(event.target)"
             />
 
-            <a href="#" onclick="downloadImg(this)" download="my-img.jpg">
-              <button class="btn btn-download">
-                <i class="fa-solid fa-download" style="color: #ffffff"></i>
-                Download
+            <div class="top-buttons">
+              <button class="btn btn-switch" onclick="onSwitchLine()">
+                <i class="fa-solid fa-right-left" style="color: #fff"></i>
               </button>
-            </a>
+              <button class="btn btn-add" onclick="onAddLine()">
+                <i class="fa-sharp fa-solid fa-plus" style="color: #fff"></i>
+              </button>
+              <button class="btn btn-delete" onclick="onDeleteLine()">
+                <i class="fa-solid fa-trash" style="color: #fff"></i>
+              </button>
+            </div>
 
-            <button class="btn" onclick="openColorPicker(this)">
-              <label for="color">
-                <i class="fa-solid fa-palette" style="color: #000000"></i>
-              </label>
-              <input
-                class="color-picker hidden"
-                type="color"
-                id="color"
-                oninput="onColorChange(event.target)"
-              />
-            </button>
+            <div class="mid-buttons">
+              <button class="btn" onclick="onFontSizeChange(1)">
+                <img src="styles/img/text-increase.svg" alt="" />
+              </button>
+              <button class="btn" onclick="onFontSizeChange(-1)">
+                <img src="styles/img/text-decrease.svg" alt="" />
+              </button>
+              <button class="btn" onclick="onAlign('right')">
+                <i class="fa-solid fa-align-left" style="color: #000000"></i>
+              </button>
+              <button class="btn" onclick="onAlign('center')">
+                <i class="fa-solid fa-align-center" style="color: #000000"></i>
+              </button>
+              <button class="btn" onclick="onAlign('left')">
+                <i class="fa-solid fa-align-right" style="color: #000000"></i>
+              </button>
+              <select name="fonts" id="fonts" class="btn font-dropdown">
+                <option value="impact">IMPACT</option>
+                <option value="arial">Arial</option>
+                <option value="segoe">Segoe</option>
+              </select>
+              <button class="btn" onclick="onUnderline()">
+                <i class="fa-solid fa-underline" style="color: #000000"></i>
+              </button>
+              <button class="btn" onclick="openColorPicker(this)">
+                <label for="color">
+                  <i class="fa-solid fa-palette" style="color: #000000"></i>
+                </label>
+                <input
+                  class="color-picker hidden"
+                  type="color"
+                  id="color"
+                  oninput="onColorChange(event.target)"
+                />
+              </button>
+            </div>
+            <div class="stickers"></div>
 
-            <button class="btn" onclick="onFontSizeChange(1)">
-              <img src="styles/img/text-increase.svg" alt="" />
-            </button>
-            <button class="btn" onclick="onFontSizeChange(-1)">
-              <img src="styles/img/text-decrease.svg" alt="" />
-            </button>
-
-            <button class="btn" onclick="onAddLine()">
-              <i class="fa-sharp fa-solid fa-plus" style="color: #000000"></i>
-            </button>
-
-            <button class="btn" onclick="onSwitchLine()">
-              <i class="fa-solid fa-right-left" style="color: #000000"></i>
-            </button>
+            <div class="share-buttons">
+              <button class="btn btn-share">
+                <i class="fa-solid fa-share-nodes" style="color: #000000"></i>
+                Share
+              </button>
+              <a href="#" onclick="downloadImg(this)" download="my-img.jpg">
+                <button class="btn btn-download">
+                  <i class="fa-solid fa-download" style="color: #ffffff"></i>
+                  Download
+                </button>
+              </a>
+            </div>
           </article>
         </div>
       </section>

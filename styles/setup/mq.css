@@ -1,0 +1,36 @@
+@media (max-width: 920px) {
+  body {
+    background-color: #22252c;
+  }
+  .main-layout {
+  }
+  .editor-layout {
+    grid-template-columns: 1fr;
+    height: 100vh;
+  }
+  .navbar .about-link {
+    place-self: center end;
+  }
+
+  .gallery-body {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  }
+  .gallery img {
+    border-radius: 30px;
+    width: 120px;
+  }
+
+  .gallery-header {
+    gap: 10px;
+  }
+
+  .gallery .search-field {
+    margin-left: 0px;
+    margin-right: 20px;
+    font-size: 0.8em;
+  }
+  .gallery .search-button {
+    margin-left: -70px;
+    margin-right: 20px;
+  }
+}

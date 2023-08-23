@@ -7,11 +7,15 @@ let gMeme = {
       txt: 'I dont use jQuery',
       size: 30,
       color: 'white',
+      align: 'center',
+      font: 'Impact',
     },
     {
-      txt: 'I dont use jQuery',
+      txt: 'use JS',
       size: 30,
       color: 'white',
+      align: 'center',
+      font: 'Impact',
     },
   ],
 }
@@ -21,12 +25,18 @@ function getMeme() {
   return gMeme
 }
 
+function getSelectedLine() {
+  return gMeme.lines[gMeme.selectedLineIdx]
+}
+
 function getImgUrlByIdx(imgIdx) {
   return gImgs[imgIdx].url
 }
 
 function setLineTxt(text) {
-  gMeme.lines[gMeme.selectedLineIdx].txt = text
+  if (gMeme.lines[gMeme.selectedLineIdx])
+    gMeme.lines[gMeme.selectedLineIdx].txt = text
+  else gMeme.lines[0].txt += text
 }
 
 function setTextColor(color) {
@@ -36,6 +46,11 @@ function setTextColor(color) {
 function setFontSize(diff) {
   console.log(diff)
   gMeme.lines[gMeme.selectedLineIdx].size += diff
+}
+
+function setLineFont(font) {
+  const line = getSelectedLine()
+  line.font = font
 }
 
 function _getImgIdx(imgId) {
@@ -58,7 +73,9 @@ function addLine() {
   gMeme.lines.push({
     txt: '',
     size: 30,
-    color: 'black',
+    color: 'white',
+    align: 'center',
+    font: 'Impact',
   })
   if (gMeme.selectedLineIdx <= 1) gMeme.selectedLineIdx = 2
   else gMeme.selectedLineIdx++
@@ -67,4 +84,15 @@ function addLine() {
 function switchLineIdx() {
   if (gMeme.selectedLineIdx == gMeme.lines.length - 1) gMeme.selectedLineIdx = 0
   else gMeme.selectedLineIdx++
+}
+
+function deleteLine() {
+  gMeme.lines = gMeme.lines.filter(
+    (line, index) => index !== gMeme.selectedLineIdx
+  )
+  gMeme.selectedLineIdx--
+}
+
+function setAlignment(alignment) {
+  gMeme.lines[gMeme.selectedLineIdx].align = alignment
 }

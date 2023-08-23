@@ -1,10 +1,11 @@
 /* MAIN LAYOUT */
 .main-layout {
+  max-height: 100vh;
   display: grid;
   grid-template-rows: 1fr 8fr 2fr 2fr 2fr 2fr;
 
-  height: 100vh;
-  margin-top: 10px;
+  background-color: #22252c;
+  padding: 20px;
 }
 
 .main-layout .editor {
@@ -13,14 +14,32 @@
 
 /* EDITOR LAYOUT */
 .editor-layout {
+  height: 70vh;
+  background-color: #383b42;
+  padding: 20px;
+  border-radius: 20px;
   display: grid;
-  grid-auto-flow: column;
-  margin: 10px 10px;
+  grid-template-columns: repeat(2, 1fr);
+  margin: 0px 30px;
+}
+.editor-layout .meme-area {
+  place-self: center;
 }
 
 /* GALLERY LAYOUT */
-
 .gallery {
+  background-color: #383b42;
+  padding-top: 20px;
+  border-radius: 20px;
+  padding: 10px;
+}
+
+.gallery-body {
+  height: 70vh;
+  overflow-y: scroll;
   display: grid;
-  grid-auto-flow: column;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  place-items: center;
+  gap: 15px;
+  padding: 10px;
 }

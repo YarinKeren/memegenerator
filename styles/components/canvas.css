@@ -1,11 +1,15 @@
 .canvas-container {
-  width: 40vw;
-  height: 40vh;
-  margin: 10px 10px;
+  width: 100%;
+  /* height: 50%; */
+  max-width: 60vh;
+  /* margin: 10px 10px; */
+  /* margin-left: 50px; */
+  place-self: center;
 }
 
 canvas {
-  border-radius: 30px;
+  place-self: center;
+  border-radius: 20px;
   width: 100%;
   height: auto;
   box-shadow: rgba(186, 185, 185, 0.669) 0px 5px 15px;

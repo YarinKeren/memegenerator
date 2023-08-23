@@ -1,0 +1,34 @@
+/* width */
+::-webkit-scrollbar {
+  margin-right: 12px;
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  border-radius: 10px;
+  background-color: #22252c;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: rgb(15, 155, 179);
+  background: linear-gradient(
+    90deg,
+    rgba(15, 155, 179, 1) 0%,
+    rgba(33, 172, 145, 1) 57%,
+    rgba(48, 187, 115, 1) 100%
+  );
+  border-radius: 12px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(15, 155, 179);
+  background: linear-gradient(
+    90deg,
+    rgba(15, 155, 179, 1) 0%,
+    rgba(33, 172, 145, 1) 57%,
+    rgba(48, 187, 115, 1) 100%
+  );
+}

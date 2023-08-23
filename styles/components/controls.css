@@ -1,14 +1,17 @@
 .controls {
+  place-self: center;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-around;
   align-items: center;
 
-  background-color: #383b42da;
+  background-color: #383b4251;
   border-radius: 30px;
-  width: 40vw;
-  height: 40vh;
-  margin: 10px 10px;
+  width: 80%;
+  height: 100%;
+
+  margin-right: 20px;
+  padding: 10px;
   background-color: rgba(181, 181, 181, 0.532);
 }
 
@@ -18,16 +21,56 @@
   border-radius: 12px;
   color: aliceblue;
   border: none;
-  box-shadow: rgba(0, 0, 0, 0.17) 0px -23px 25px 0px inset,
-    rgba(0, 0, 0, 0.15) 0px -36px 30px 0px inset,
-    rgba(0, 0, 0, 0.1) 0px -79px 40px 0px inset, rgba(0, 0, 0, 0.06) 0px 2px 1px,
-    rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px,
-    rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px;
+  box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px,
+    rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
 }
 .controls .btn-download {
   background-color: #8f44bb;
 }
+.controls .btn-share {
+  background-color: #1e7cd3;
+}
+.controls .btn-switch {
+  background-color: #49b6d1;
+}
+.controls .btn-add {
+  background-color: #40de58;
+}
+.controls .btn-delete {
+  background-color: #da2e36;
+}
+
+.mid-buttons {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 5px;
+  background-color: #19a59f;
+  padding: 10px;
+  border-radius: 10px;
+}
+.mid-buttons .btn > img {
+  width: 0.9em;
+}
+.mid-buttons .font-dropdown {
+  color: black;
+}
+
+.controls .text-input {
+  box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px,
+    rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+  border-radius: 12px;
+  padding: 10px;
+  font-family: Poppins-Reg;
+  text-align: center;
+}
 
 .controls label {
   cursor: pointer;
+}
+
+.controls .stickers {
+  background-color: aliceblue;
+  border-radius: 20px;
+  padding: 20px;
 }

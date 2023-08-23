@@ -3,11 +3,16 @@ function onInit() {
 }
 
 function renderGallery() {
-  const elGallery = getEl('.gallery')
-  elGallery.innerHTML = `
-  <img src="meme-imgs/meme-imgs/1.jpg" alt="" onclick="onImgSelect(this)">
-  <img src="meme-imgs/meme-imgs/2.jpg" alt="" onclick="onImgSelect(this)">
-  `
+  const elGallery = getEl('.gallery-body')
+  let galleryHTML = ''
+
+  for (let i = 0; i < 18; i++) {
+    galleryHTML += `<img src="meme-imgs/meme-imgs/${
+      i + 1
+    }.jpg" alt="" onclick="onImgSelect(this)">`
+  }
+
+  elGallery.innerHTML += galleryHTML
 }
 
 function onImgSelect(elImg) {
