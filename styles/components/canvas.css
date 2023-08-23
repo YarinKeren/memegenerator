@@ -10,3 +10,7 @@ canvas {
   height: auto;
   box-shadow: rgba(186, 185, 185, 0.669) 0px 5px 15px;
 }
+
+.line-frame {
+  background-color: aliceblue;
+}

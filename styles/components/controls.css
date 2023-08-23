@@ -9,6 +9,7 @@
   width: 40vw;
   height: 40vh;
   margin: 10px 10px;
+  background-color: rgba(181, 181, 181, 0.532);
 }
 
 .controls .btn {

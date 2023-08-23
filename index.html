@@ -30,8 +30,7 @@
           <article class="controls">
             <input
               type="text"
-              name=""
-              id=""
+              class="text-input"
               placeholder="Enter text"
               oninput="onTextChange(event.target)"
             />
@@ -64,6 +63,10 @@
 
             <button class="btn" onclick="onAddLine()">
               <i class="fa-sharp fa-solid fa-plus" style="color: #000000"></i>
+            </button>
+
+            <button class="btn" onclick="onSwitchLine()">
+              <i class="fa-solid fa-right-left" style="color: #000000"></i>
             </button>
           </article>
         </div>

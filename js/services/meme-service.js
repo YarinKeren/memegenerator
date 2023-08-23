@@ -53,3 +53,18 @@ function setImg(imagePath) {
 
   gMeme.selectedImgIdx = _getImgIdx(id)
 }
+
+function addLine() {
+  gMeme.lines.push({
+    txt: '',
+    size: 30,
+    color: 'black',
+  })
+  if (gMeme.selectedLineIdx <= 1) gMeme.selectedLineIdx = 2
+  else gMeme.selectedLineIdx++
+}
+
+function switchLineIdx() {
+  if (gMeme.selectedLineIdx == gMeme.lines.length - 1) gMeme.selectedLineIdx = 0
+  else gMeme.selectedLineIdx++
+}

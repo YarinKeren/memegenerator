@@ -23,16 +23,22 @@ function renderMeme() {
   elImg.src = imgUrl
   elImg.onload = () => {
     coverCanvasWithImg(elImg)
-    const selectedLine = meme.lines[meme.selectedLineIdx]
-    const textX = gElCanvas.width / 2
-    const textY = gElCanvas.height / 5
-    drawText(meme, selectedLine.txt, textX, textY)
-    drawText(meme, meme.lines[1].txt, textX, textY + 100)
+
+    meme.lines.forEach((line, i) => {
+      const textX = gElCanvas.width / 2
+      const textY = (gElCanvas.height / (meme.lines.length + 1)) * (i + 1)
+
+      const isSelected = i === meme.selectedLineIdx
+
+      drawText(line, line.txt, textX, textY, isSelected)
+    })
   }
+
+  const elTextInput = getEl('.text-input')
+  elTextInput.value = meme.lines[meme.selectedLineIdx].txt
 
   const gallery = getEl('.gallery')
   gallery.classList.add('hidden')
-
   const elEditor = getEl('.editor')
   elEditor.classList.remove('hidden')
 }
@@ -49,13 +55,28 @@ function resizeCanvas() {
   gElCanvas.height = elContainer.offsetHeight
 }
 
-function drawText(meme, text, x, y) {
+function drawText(line, text, x, y, isSelected) {
   gCtx.lineWidth = 1
   gCtx.strokeStyle = 'white'
-  gCtx.fillStyle = meme.lines[meme.selectedLineIdx].color
-  gCtx.font = `${meme.lines[meme.selectedLineIdx].size}px Impact`
   gCtx.textAlign = 'center'
   gCtx.textBaseline = 'middle'
+
+  const textWidth = gCtx.measureText(text).width
+
+  if (isSelected) {
+    gCtx.fillStyle = 'rgba(181, 181, 181, 0.7)'
+    gCtx.fillRect(
+      x - textWidth / 2 - 5,
+      y - line.size / 2,
+      textWidth + 10,
+      line.size
+    )
+    gCtx.font = `${line.size}px Impact`
+    gCtx.fillStyle = line.color
+  } else {
+    gCtx.font = `${line.size}px Impact`
+    gCtx.fillStyle = line.color
+  }
 
   gCtx.strokeText(text, x, y)
   gCtx.fillText(text, x, y)
@@ -83,5 +104,18 @@ function onColorChange({ value }) {
 
 function onFontSizeChange(diff) {
   setFontSize(diff)
+  renderMeme()
+}
+
+function onAddLine() {
+  addLine()
+  renderMeme()
+  const elTextInput = getEl('.text-input')
+  elTextInput.focus()
+  elTextInput.value = ''
+}
+
+function onSwitchLine() {
+  switchLineIdx()
   renderMeme()
 }
