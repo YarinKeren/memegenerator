@@ -1,6 +1,19 @@
+/* MAIN LAYOUT */
 .main-layout {
   display: grid;
-}
-/* MAIN LAYOUT */
+  grid-template-rows: 1fr 8fr 2fr 2fr 2fr 2fr;
 
-/* CARD LAYOUT */
+  height: 100vh;
+  margin-top: 10px;
+}
+
+.main-layout .editor {
+  grid-row: 2/6;
+}
+
+/* EDITOR LAYOUT */
+.editor-layout {
+  display: grid;
+  grid-auto-flow: column;
+  margin: 10px 10px;
+}

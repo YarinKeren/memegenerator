@@ -2,6 +2,8 @@
   display: grid;
   grid-auto-flow: column;
 
+  margin-top: 10px;
+
   width: 100%;
   background-color: #19a59f;
   list-style-type: none;

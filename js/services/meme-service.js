@@ -5,8 +5,13 @@ let gMeme = {
   lines: [
     {
       txt: 'I sometimes eat Falafel',
-      size: 20,
-      color: 'red',
+      size: 30,
+      color: 'black',
+    },
+    {
+      txt: 'I dont use jQuery',
+      size: 30,
+      color: 'black',
     },
   ],
 }
@@ -22,6 +27,15 @@ function getImgUrlByIdx(imgIdx) {
 
 function setLineTxt(text) {
   gMeme.lines[gMeme.selectedLineIdx].txt = text
+}
+
+function setTextColor(color) {
+  gMeme.lines[gMeme.selectedLineIdx].color = color
+}
+
+function setFontSize(diff) {
+  console.log(diff)
+  gMeme.lines[gMeme.selectedLineIdx].size += diff
 }
 
 function _getImgIdx(imgId) {
