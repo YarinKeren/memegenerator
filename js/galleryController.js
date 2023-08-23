@@ -21,3 +21,8 @@ function onImgSelect(elImg) {
   setImg(imagePath)
   onMemeInit()
 }
+
+function onFlexible() {
+  setImg(`meme-imgs/meme-imgs/${getRandomInt(1, 19)}.jpg`)
+  onMemeInit()
+}

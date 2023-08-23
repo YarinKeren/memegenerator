@@ -9,6 +9,7 @@ let gMeme = {
       color: 'white',
       align: 'center',
       font: 'Impact',
+      underline: false,
     },
     {
       txt: 'use JS',
@@ -16,6 +17,7 @@ let gMeme = {
       color: 'white',
       align: 'center',
       font: 'Impact',
+      underline: false,
     },
   ],
 }
@@ -76,6 +78,7 @@ function addLine() {
     color: 'white',
     align: 'center',
     font: 'Impact',
+    underline: false,
   })
   if (gMeme.selectedLineIdx <= 1) gMeme.selectedLineIdx = 2
   else gMeme.selectedLineIdx++

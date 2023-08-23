@@ -131,12 +131,27 @@ function drawText(line, isSelected) {
     gCtx.strokeStyle = 'black'
     gCtx.font = `${line.size}px ${line.font}`
     gCtx.fillStyle = line.color
+    drawUnderline(line)
   } else {
     gCtx.font = `${line.size}px ${line.font}`
     gCtx.fillStyle = line.color
+    drawUnderline(line)
   }
+
   gCtx.strokeText(line.txt, line.x, line.y)
   gCtx.fillText(line.txt, line.x, line.y)
+}
+
+function drawUnderline(line) {
+  const padding = 5
+  let textWidth = gCtx.measureText(line.txt).width
+  if (line.underline) {
+    gCtx.beginPath()
+    gCtx.moveTo(line.x - textWidth / 2, line.y + padding * 4)
+    gCtx.lineTo(line.x + textWidth / 2, line.y + padding * 4)
+    gCtx.lineWidth = 2
+    gCtx.stroke()
+  }
 }
 
 function onTextChange({ value }) {
@@ -189,5 +204,14 @@ function onAlign(allignment) {
 
 function onChangeFont({ value }) {
   setLineFont(value)
+  renderMeme()
+}
+
+function onUnderline() {
+  const selectedLine = getSelectedLine()
+  if (selectedLine) {
+    selectedLine.underline = !selectedLine.underline
+    renderMeme()
+  }
   renderMeme()
 }
