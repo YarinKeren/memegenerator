@@ -1,7 +1,8 @@
+'use strict'
+
 function renderGallery() {
   const elGallery = getEl('.gallery-body')
   const imgs = getImgs()
-  const filter = getFilter()
   let galleryHTML = ''
 
   imgs.forEach((img, idx) => {
@@ -38,11 +39,31 @@ function onImgSelect(elImg, imgUrl) {
 }
 
 function onFlexible() {
-  setImg(`meme-imgs/meme-imgs/${getRandomInt(1, 19)}.jpg`)
+  setImg(getRandomInt(1, 19))
   onMemeInit()
 }
 
-function onSetFilterBy({ value }) {
-  setFilterBy(value)
+function onSetFilterBy({ value }, key) {
+  if (value !== undefined) setFilterBy(value)
+  else setFilterBy(key)
   renderGallery()
+}
+
+function renderKeywordsSearch() {
+  const elSearchContainer = getEl('.search-words')
+  const searchMap = getSearchCountMap()
+  let strHtml = ''
+
+  for (const key in searchMap) {
+    const value = searchMap[key]
+    strHtml += `<span style="font-size: ${value}px" onclick="onSetFilterBy(this, '${key.toLowerCase()}'); increaseFont(this)">${key}</span>`
+  }
+
+  elSearchContainer.innerHTML = strHtml
+}
+
+function increaseFont(elSpan) {
+  const currentFontSize = parseInt(elSpan.style.fontSize)
+  const newFontSize = currentFontSize + 1
+  elSpan.style.fontSize = `${newFontSize}px`
 }

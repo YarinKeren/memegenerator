@@ -1,6 +1,9 @@
+'use strict'
+
 function onInit() {
   renderGallery()
   addNavListener()
+  renderKeywordsSearch()
 }
 
 function addNavListener() {

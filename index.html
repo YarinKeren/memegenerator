@@ -35,6 +35,7 @@
               placeholder="Search"
               class="search-field"
               list="keywordsList"
+              title="Filter"
               oninput="onSetFilterBy(this)"
             />
             <datalist id="keywordsList" class="keywordsList"></datalist>
@@ -45,10 +46,36 @@
               ></i>
             </button>
           </form>
-          <button class="btn btn-flexible" onclick="onFlexible()">
+          <button
+            class="btn btn-flexible"
+            onclick="onFlexible()"
+            title="Randomize a meme !"
+          >
             Im Flexible
           </button>
-          <span class="search-words">Funny Animal Man Women Cosmic Smile</span>
+          <input
+            type="file"
+            id="uploadFile"
+            class="file-input"
+            style="display: none"
+            name="image"
+            onchange="onImgInput(event)"
+            accept="image/*"
+          />
+          <button
+            class="btn btn-upload"
+            id="uploadButton"
+            onclick="document.getElementById('uploadFile').click();"
+            aria-label="Upload"
+            role="button"
+            tabindex="0"
+            title="Add Picture"
+          >
+            <i class="fa-solid fa-upload fa-lg" style="color: #000000"></i>
+          </button>
+
+          <!-- Black Puppy Baby Idiot Laugh Dictator -->
+          <span class="search-words"></span>
         </div>
         <article class="gallery-body"></article>
       </section>
@@ -158,6 +185,7 @@
         </div>
       </section>
     </div>
+    <script src="js/services/uploadFromLocalService.js"></script>
     <script src="js/services/utilService.js"></script>
     <script src="js/services/galleryService.js"></script>
     <script src="js/services/memeService.js"></script>

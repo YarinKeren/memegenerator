@@ -1,5 +1,6 @@
 let gElCanvas
 let gCtx
+let gIsDrag = false
 
 function onMemeInit() {
   gElCanvas = getEl('canvas')
@@ -27,8 +28,14 @@ function onAddSticker(stickerIdx) {
   const newStickerLine = {
     sticker: true,
     url: selectedSticker.url,
-    x: gElCanvas.width / 2, // Adjust as needed
-    y: gElCanvas.height / 2, // Adjust as needed
+    // x: gElCanvas.width / 2,
+    // y: gElCanvas.height / 2,
+    boundingBox: {
+      x: 150,
+      y: 150,
+      width: 50,
+      height: 50,
+    },
   }
   gMeme.lines.push(newStickerLine)
   gMeme.selectedLineIdx = gMeme.lines.length - 1 // Set the selected line to the new sticker
@@ -58,8 +65,142 @@ function addListeners() {
       moveLine(event.key === 'ArrowUp' ? -1 : 1) // Move line up or down
     }
   })
+  addMouseListeners()
+  addTouchListeners()
 }
 
+function addMouseListeners() {
+  gElCanvas.addEventListener('mousedown', handleCanvasMouseDown)
+}
+
+function addTouchListeners() {
+  gElCanvas.addEventListener('touchstart', handleCanvasTouchStart)
+  gElCanvas.addEventListener('touchmove', handleCanvasTouchMove)
+  gElCanvas.addEventListener('touchend', handleCanvasTouchEnd)
+}
+
+function handleCanvasMouseDown(event) {
+  const rect = gElCanvas.getBoundingClientRect()
+  const scaleX = gElCanvas.width / rect.width
+  const scaleY = gElCanvas.height / rect.height
+
+  const clickX = event.offsetX * scaleX
+  const clickY = event.offsetY * scaleY
+
+  for (let i = 0; i < gMeme.lines.length; i++) {
+    const line = gMeme.lines[i]
+    if (
+      clickX >= line.boundingBox.x &&
+      clickX <= line.boundingBox.x + line.boundingBox.width &&
+      clickY >= line.boundingBox.y &&
+      clickY <= line.boundingBox.y + line.boundingBox.height
+    ) {
+      gMeme.selectedLineIdx = i
+      gDraggingLineIdx = i
+      renderMeme()
+
+      document.addEventListener('mousemove', handleCanvasMove)
+      document.addEventListener('mouseup', handleCanvasRelease)
+      break
+    }
+  }
+}
+
+function handleCanvasMove(event) {
+  if (gDraggingLineIdx === null) return
+
+  const rect = gElCanvas.getBoundingClientRect()
+  const scaleX = gElCanvas.width / rect.width
+  const scaleY = gElCanvas.height / rect.height
+
+  const moveX = event.offsetX * scaleX
+  const moveY = event.offsetY * scaleY
+
+  const line = gMeme.lines[gDraggingLineIdx]
+  if (line.sticker) {
+    line.boundingBox.x = moveX
+    line.boundingBox.y = moveY
+  } else {
+    line.prevAlign = line.align
+    line.align = 'left'
+    line.x = moveX
+    line.y = moveY
+  }
+  renderMeme()
+}
+
+function handleCanvasRelease(event) {
+  document.removeEventListener('mousemove', handleCanvasMove)
+  document.removeEventListener('mouseup', handleCanvasRelease)
+
+  const line = gMeme.lines[gDraggingLineIdx]
+  if (line && line.prevAlign) {
+    line.align = line.prevAlign
+    delete line.prevAlign
+  }
+
+  gDraggingLineIdx = null
+}
+
+function handleCanvasTouchStart(event) {
+  const rect = gElCanvas.getBoundingClientRect()
+  const touch = event.touches[0]
+
+  const scale = gElCanvas.width / gElCanvas.getBoundingClientRect().width
+  const touchX = (touch.clientX - rect.left) * scale
+  const touchY = (touch.clientY - rect.top) * scale
+
+  for (let i = 0; i < gMeme.lines.length; i++) {
+    const line = gMeme.lines[i]
+    if (
+      touchX >= line.boundingBox.x &&
+      touchX <= line.boundingBox.x + line.boundingBox.width &&
+      touchY >= line.boundingBox.y &&
+      touchY <= line.boundingBox.y + line.boundingBox.height
+    ) {
+      gMeme.selectedLineIdx = i
+      gDraggingLineIdx = i
+      renderMeme()
+      break
+    }
+  }
+}
+
+function handleCanvasTouchMove(event) {
+  if (gDraggingLineIdx === null) return
+
+  const rect = gElCanvas.getBoundingClientRect()
+  const touch = event.touches[0]
+
+  const scale = gElCanvas.width / gElCanvas.getBoundingClientRect().width
+  const moveX = (touch.clientX - rect.left) * scale
+  const moveY = (touch.clientY - rect.top) * scale
+
+  const line = gMeme.lines[gDraggingLineIdx]
+
+  if (line.sticker) {
+    line.boundingBox.x = moveX
+    line.boundingBox.y = moveY
+  } else {
+    line.prevAlign = line.align
+    line.align = 'left'
+    line.x = moveX
+    line.y = moveY
+  }
+
+  renderMeme()
+  event.preventDefault()
+}
+
+function handleCanvasTouchEnd(event) {
+  const line = gMeme.lines[gDraggingLineIdx]
+  if (line && line.prevAlign) {
+    line.align = line.prevAlign
+    delete line.prevAlign
+  }
+
+  gDraggingLineIdx = null
+}
 function moveLine(direction) {
   const selectedLine = getSelectedLine()
   selectedLine.y += direction * 10
@@ -72,7 +213,8 @@ function onLineClick({ offsetX, offsetY }) {
   let clickedLineIdx = -1
 
   meme.lines.forEach((line, i) => {
-    const textWidth = gCtx.measureText(line.txt).width
+    let textWidth = gCtx.measureText(line.txt).width
+    if (i === 0) textWidth *= 3
     const textHeight = line.size
 
     if (line.sticker) {
@@ -127,13 +269,23 @@ function renderMeme() {
         stickerImg.src = line.url
         stickerImg.onload = () => {
           if (i === meme.selectedLineIdx) {
-            // Highlight selected sticker
             gCtx.strokeStyle = 'red'
             gCtx.lineWidth = 1
-            gCtx.strokeRect(line.x, line.y, stickerImg.width, stickerImg.height)
+            gCtx.strokeRect(
+              line.boundingBox.x,
+              line.boundingBox.y,
+              line.boundingBox.width,
+              line.boundingBox.height
+            )
             gCtx.strokeStyle = 'black'
           }
-          gCtx.drawImage(stickerImg, line.x, line.y)
+          gCtx.drawImage(
+            stickerImg,
+            line.boundingBox.x,
+            line.boundingBox.y,
+            line.boundingBox.width,
+            line.boundingBox.height
+          )
         }
       } else {
         if (!line.x || !line.y) {
@@ -143,6 +295,21 @@ function renderMeme() {
             line.size / 2
         }
         const isSelected = i === meme.selectedLineIdx
+
+        // Calculate textWidth and textHeight based on the line's text and font size
+        const textWidth = gCtx.measureText(line.txt).width
+        const textHeight = line.size
+
+        // Calculate the bounding box dimensions
+        const boundingBox = {
+          x: line.x - textWidth / 2,
+          y: line.y - textHeight / 2,
+          width: textWidth,
+          height: textHeight,
+        }
+
+        // Set the bounding box property
+        line.boundingBox = boundingBox
 
         drawText(line, isSelected)
       }

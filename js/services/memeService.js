@@ -1,3 +1,5 @@
+'use strict'
+
 let gImgs = []
 
 const gStickers = [
@@ -31,7 +33,7 @@ let gMeme = {
     },
   ],
 }
-let gKeywordSearchCountMap = { funny: 12, cat: 16, baby: 2 }
+
 const SAVED_MEMES = 'memesDB'
 
 function getMeme() {
@@ -52,6 +54,10 @@ function getSelectedLine() {
 
 function getImgUrlByIdx(imgIdx) {
   return gImgs[imgIdx].url
+}
+
+function getImgByIdx(idx) {
+  return gImgs.find((img, id) => idx === id)
 }
 
 function setLineTxt(text) {
@@ -93,9 +99,12 @@ function setSavedImg(imagePath, meme) {
 }
 
 function setImg(elImg, imgUrl) {
+  let imgIdx
+  if (elImg.dataset) imgIdx = _getImgIdx(elImg.dataset.idx)
+  else imgIdx = elImg
   gMeme = {
     imgURL: imgUrl,
-    selectedImgIdx: _getImgIdx(elImg.dataset.idx),
+    selectedImgIdx: imgIdx,
     selectedLineIdx: 0,
     lines: [
       {

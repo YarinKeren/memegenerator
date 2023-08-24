@@ -1,3 +1,5 @@
+'use strict'
+
 const gImgsGallery = [
   {
     id: '1',
@@ -90,6 +92,15 @@ const gImgsGallery = [
     keywords: ['look', 'toy story'],
   },
 ]
+let gKeywordSearchCountMap = {
+  Puppy: 12,
+  Baby: 16,
+  Idiot: 12,
+  Laugh: 8,
+  Dictator: 24,
+  Black: 12,
+}
+const MAP_KEY = 'keywordsMap'
 let gFilterBy = ''
 
 function getImgs() {
@@ -98,6 +109,10 @@ function getImgs() {
   return gImgsGallery.filter((img) => {
     return img.keywords.some((keyword) => keyword.includes(gFilterBy))
   })
+}
+
+function getSearchCountMap() {
+  return gKeywordSearchCountMap
 }
 
 function setFilterBy(filterBy) {

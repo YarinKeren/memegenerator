@@ -22,10 +22,18 @@
 }
 
 .gallery .search-words {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
   border-radius: 30px;
   padding: 10px;
   color: aliceblue;
   background-color: #87898d;
+}
+.gallery .search-words span {
+  cursor: pointer;
+  user-select: none;
+  margin-right: 10px;
 }
 
 .gallery .form {
@@ -49,4 +57,8 @@
   border: none;
   outline: none;
   margin-left: -50px;
+}
+
+.gallery .btn-upload {
+  color: black;
 }
