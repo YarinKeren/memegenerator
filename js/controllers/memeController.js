@@ -7,7 +7,32 @@ function onMemeInit() {
   toggleView()
   addListeners()
   renderMeme()
+  renderStickers()
   resizeCanvas()
+}
+
+function renderStickers() {
+  const stickers = getStickers()
+  const elStickersContainer = document.querySelector('.stickers')
+  let stickersHtml = ''
+  stickers.forEach((sticker, idx) => {
+    stickersHtml += `<img src="${sticker.url}" alt="" onclick="onAddSticker(${idx})">
+    `
+  })
+  elStickersContainer.innerHTML = stickersHtml
+}
+
+function onAddSticker(stickerIdx) {
+  const selectedSticker = getStickers()[stickerIdx]
+  const newStickerLine = {
+    sticker: true,
+    url: selectedSticker.url,
+    x: gElCanvas.width / 2, // Adjust as needed
+    y: gElCanvas.height / 2, // Adjust as needed
+  }
+  gMeme.lines.push(newStickerLine)
+  gMeme.selectedLineIdx = gMeme.lines.length - 1 // Set the selected line to the new sticker
+  renderMeme() // Render the meme with the new sticker selected
 }
 
 function toggleView() {
@@ -44,18 +69,43 @@ function moveLine(direction) {
 function onLineClick({ offsetX, offsetY }) {
   const meme = getMeme()
 
+  let clickedLineIdx = -1
+
   meme.lines.forEach((line, i) => {
     const textWidth = gCtx.measureText(line.txt).width
     const textHeight = line.size
 
-    if (
-      offsetX >= line.x - textWidth / 2 &&
-      offsetX <= line.x + textWidth / 2 &&
-      offsetY >= line.y - textHeight / 2 &&
-      offsetY <= line.y + textHeight / 2
-    ) {
-      meme.selectedLineIdx = i
-      renderMeme()
+    if (line.sticker) {
+      const stickerImg = new Image()
+      stickerImg.src = line.url
+
+      stickerImg.onload = () => {
+        if (
+          offsetX >= line.x &&
+          offsetX <= line.x + stickerImg.width &&
+          offsetY >= line.y &&
+          offsetY <= line.y + stickerImg.height
+        ) {
+          clickedLineIdx = i
+          if (clickedLineIdx !== -1) {
+            meme.selectedLineIdx = clickedLineIdx
+            renderMeme()
+          }
+        }
+      }
+    } else {
+      if (
+        offsetX >= line.x - textWidth / 2 &&
+        offsetX <= line.x + textWidth / 2 &&
+        offsetY >= line.y - textHeight / 2 &&
+        offsetY <= line.y + textHeight / 2
+      ) {
+        clickedLineIdx = i
+        if (clickedLineIdx !== -1) {
+          meme.selectedLineIdx = clickedLineIdx
+          renderMeme()
+        }
+      }
     }
   })
 }
@@ -72,14 +122,30 @@ function renderMeme() {
     coverCanvasWithImg(elImg)
 
     meme.lines.forEach((line, i) => {
-      if (!line.x || !line.y) {
-        line.x = gElCanvas.width / 2
-        line.y =
-          (gElCanvas.height / (meme.lines.length + 1)) * (i + 1) + line.size / 2
-      }
-      const isSelected = i === meme.selectedLineIdx
+      if (line.sticker) {
+        const stickerImg = new Image()
+        stickerImg.src = line.url
+        stickerImg.onload = () => {
+          if (i === meme.selectedLineIdx) {
+            // Highlight selected sticker
+            gCtx.strokeStyle = 'red'
+            gCtx.lineWidth = 1
+            gCtx.strokeRect(line.x, line.y, stickerImg.width, stickerImg.height)
+            gCtx.strokeStyle = 'black'
+          }
+          gCtx.drawImage(stickerImg, line.x, line.y)
+        }
+      } else {
+        if (!line.x || !line.y) {
+          line.x = gElCanvas.width / 2
+          line.y =
+            (gElCanvas.height / (meme.lines.length + 1)) * (i + 1) +
+            line.size / 2
+        }
+        const isSelected = i === meme.selectedLineIdx
 
-      drawText(line, isSelected)
+        drawText(line, isSelected)
+      }
     })
   }
 

@@ -1,5 +1,13 @@
 let gImgs = []
 
+const gStickers = [
+  { url: 'styles/stickers/1.png' },
+  { url: 'styles/stickers/2.png' },
+  { url: 'styles/stickers/3.png' },
+  { url: 'styles/stickers/4.png' },
+  { url: 'styles/stickers/5.png' },
+]
+
 let gMeme = {
   imgURL: null,
   selectedImgIdx: 5,
@@ -28,6 +36,10 @@ const SAVED_MEMES = 'memesDB'
 
 function getMeme() {
   return gMeme
+}
+
+function getStickers() {
+  return gStickers
 }
 
 function setImgs(imgs) {
