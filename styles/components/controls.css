@@ -4,13 +4,11 @@
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
-
   background-color: #383b4251;
   border-radius: 30px;
   width: 80%;
-  height: 100%;
-
-  margin-right: 20px;
+  height: 90%;
+  /* margin-right: 20px; */
   padding: 10px;
   background-color: rgba(181, 181, 181, 0.532);
 }

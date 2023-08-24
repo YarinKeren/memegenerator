@@ -1,10 +1,10 @@
+'use strict'
+
 function onImgInput(ev) {
   loadImageFromInput(ev, renderImg)
 }
 
-// Read the file from the input
-// When done send the image to the callback function
-function loadImageFromInput(ev, onImageReady) {
+function loadImageFromInput(ev) {
   const reader = new FileReader()
 
   reader.onload = function (event) {
@@ -24,6 +24,5 @@ function loadImageFromInput(ev, onImageReady) {
 }
 
 function renderImg(img) {
-  // Draw the img on the canvas
   gCtx.drawImage(img, 0, 0, gElCanvas.width, gElCanvas.height)
 }

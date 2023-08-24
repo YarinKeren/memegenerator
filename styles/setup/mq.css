@@ -1,10 +1,14 @@
-@media (max-width: 920px) {
+@media (max-width: 400px) {
   body {
     background-color: #22252c;
   }
   .editor-layout {
     grid-template-columns: 1fr;
+    grid-template-rows: 1fr 2fr;
     height: 100vh;
+  }
+  .canvas-container {
+    place-self: start;
   }
 
   .gallery-body {
@@ -28,5 +32,26 @@
   .gallery .search-button {
     margin-left: -70px;
     margin-right: 20px;
+  }
+  .controls {
+    margin-right: 0px;
+  }
+  .controls .stickers {
+    flex-wrap: wrap;
+  }
+  .controls .stickers img {
+    width: 20%;
+  }
+  .navbar .logo {
+    margin-right: 70px;
+  }
+  .navbar .about-link {
+    place-self: center;
+  }
+  .navbar .gallery-link {
+    place-self: center;
+  }
+  .navbar .memes-link {
+    place-self: center;
   }
 }

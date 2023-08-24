@@ -6,15 +6,22 @@ function renderGallery() {
   let galleryHTML = ''
 
   imgs.forEach((img, idx) => {
-    galleryHTML += `<img src="${img.url}" alt="" onclick="onImgSelect(this, '${
-      img.url
-    }')" data-keywords="${img.keywords}" data-idx="${idx + 1}">`
+    galleryHTML += `<img src="${img.url}"
+                      onclick="onImgSelect(this, '${img.url}')"
+                      data-keywords="${img.keywords}"
+                      data-idx="${idx + 1}"
+                    >`
   })
 
   elGallery.innerHTML = galleryHTML
 
   setImgs(imgs)
   renderKeywordsDataList()
+}
+
+function onImgSelect(elImg, imgUrl) {
+  setImg(elImg, imgUrl)
+  onMemeInit()
 }
 
 function renderKeywordsDataList() {
@@ -27,15 +34,10 @@ function renderKeywordsDataList() {
     return keywords
   }, [])
 
-  const elKeywordsList = document.querySelector('.keywordsList')
+  const elKeywordsList = getEl('.keywordsList')
   elKeywordsList.innerHTML = uniqueKeywords
     .map((keyword) => `<option value="${keyword}"></option>`)
     .join('')
-}
-
-function onImgSelect(elImg, imgUrl) {
-  setImg(elImg, imgUrl)
-  onMemeInit()
 }
 
 function onFlexible() {
@@ -56,14 +58,16 @@ function renderKeywordsSearch() {
 
   for (const key in searchMap) {
     const value = searchMap[key]
-    strHtml += `<span style="font-size: ${value}px" onclick="onSetFilterBy(this, '${key.toLowerCase()}'); increaseFont(this)">${key}</span>`
+    strHtml += `<span style="font-size: ${value}px"
+                  onclick="onSetFilterBy(this, '${key.toLowerCase()}');
+                  increaseFont(this)">${key}
+                </span>`
   }
 
   elSearchContainer.innerHTML = strHtml
 }
 
 function increaseFont(elSpan) {
-  const currentFontSize = parseInt(elSpan.style.fontSize)
-  const newFontSize = currentFontSize + 1
-  elSpan.style.fontSize = `${newFontSize}px`
+  const currFontSize = parseInt(elSpan.style.fontSize)
+  elSpan.style.fontSize = `${currFontSize + 1}px`
 }

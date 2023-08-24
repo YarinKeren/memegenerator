@@ -10,29 +10,7 @@ const gStickers = [
   { url: 'styles/stickers/5.png' },
 ]
 
-let gMeme = {
-  imgURL: null,
-  selectedImgIdx: 5,
-  selectedLineIdx: 0,
-  lines: [
-    {
-      txt: 'I dont use jQuery',
-      size: 30,
-      color: 'white',
-      align: 'center',
-      font: 'Impact',
-      underline: false,
-    },
-    {
-      txt: 'use JS',
-      size: 30,
-      color: 'white',
-      align: 'center',
-      font: 'Impact',
-      underline: false,
-    },
-  ],
-}
+let gMeme = {}
 
 const SAVED_MEMES = 'memesDB'
 
@@ -61,18 +39,18 @@ function getImgByIdx(idx) {
 }
 
 function setLineTxt(text) {
-  if (gMeme.lines[gMeme.selectedLineIdx])
-    gMeme.lines[gMeme.selectedLineIdx].txt = text
+  const line = getSelectedLine()
+  if (line) line.txt = text
   else gMeme.lines[0].txt += text
 }
 
 function setTextColor(color) {
-  gMeme.lines[gMeme.selectedLineIdx].color = color
+  const line = getSelectedLine()
+  line.color = color
 }
 
 function setFontSize(diff) {
-  console.log(diff)
-  gMeme.lines[gMeme.selectedLineIdx].size += diff
+  line.size += diff
 }
 
 function setLineFont(font) {
@@ -90,7 +68,7 @@ function setSavedImg(imagePath, meme) {
   gImgs.push({
     id: id,
     url: imagePath,
-    keywords: ['cute', 'puppy'],
+    keywords: ['idiot', 'funny'],
   })
 
   gMeme = meme
@@ -102,13 +80,15 @@ function setImg(elImg, imgUrl) {
   let imgIdx
   if (elImg.dataset) imgIdx = _getImgIdx(elImg.dataset.idx)
   else imgIdx = elImg
+  if (imgIdx === -1) imgIdx = elImg.dataset.idx
+
   gMeme = {
-    imgURL: imgUrl,
+    url: imgUrl,
     selectedImgIdx: imgIdx,
     selectedLineIdx: 0,
     lines: [
       {
-        txt: 'I dont use jQuery',
+        txt: 'Canvas is shit',
         size: 30,
         color: 'white',
         align: 'center',
@@ -116,7 +96,7 @@ function setImg(elImg, imgUrl) {
         underline: false,
       },
       {
-        txt: 'use JS',
+        txt: 'I want a CR',
         size: 30,
         color: 'white',
         align: 'center',
@@ -153,7 +133,8 @@ function deleteLine() {
 }
 
 function setAlignment(alignment) {
-  gMeme.lines[gMeme.selectedLineIdx].align = alignment
+  const line = getSelectedLine()
+  line.align = alignment
 }
 
 function saveMemeToStorage() {

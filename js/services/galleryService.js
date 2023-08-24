@@ -9,17 +9,17 @@ const gImgsGallery = [
   {
     id: '2',
     url: 'meme-imgs/meme-imgs/2.jpg',
-    keywords: ['cute', 'puppy'],
+    keywords: ['blonde', 'idiot'],
   },
   {
     id: '3',
     url: 'meme-imgs/meme-imgs/3.jpg',
-    keywords: ['baby', 'puppy', 'cute'],
+    keywords: ['puppy', 'cute'],
   },
   {
     id: '4',
     url: 'meme-imgs/meme-imgs/4.jpg',
-    keywords: ['cute', 'cat'],
+    keywords: ['cute', 'puppy'],
   },
   {
     id: '5',
@@ -29,32 +29,32 @@ const gImgsGallery = [
   {
     id: '6',
     url: 'meme-imgs/meme-imgs/6.jpg',
-    keywords: ['weird', 'professor'],
+    keywords: ['cute', 'cat'],
   },
   {
     id: '7',
     url: 'meme-imgs/meme-imgs/7.jpg',
-    keywords: ['baby', 'wow'],
+    keywords: ['interesting', 'funny'],
   },
   {
     id: '8',
     url: 'meme-imgs/meme-imgs/8.jpg',
-    keywords: ['interesting', 'funny'],
+    keywords: ['baby', 'laugh'],
   },
   {
     id: '9',
     url: 'meme-imgs/meme-imgs/9.jpg',
-    keywords: ['baby', 'laugh'],
+    keywords: ['weird', 'professor'],
   },
   {
     id: '10',
     url: 'meme-imgs/meme-imgs/10.jpg',
-    keywords: ['laugh', 'idiot', 'black'],
+    keywords: ['laugh', 'idiot', 'quotes'],
   },
   {
     id: '11',
     url: 'meme-imgs/meme-imgs/11.jpg',
-    keywords: ['gay', 'black'],
+    keywords: ['baby', 'black'],
   },
   {
     id: '12',
@@ -64,32 +64,67 @@ const gImgsGallery = [
   {
     id: '13',
     url: 'meme-imgs/meme-imgs/13.jpg',
-    keywords: ['cheers', 'fancy'],
+    keywords: ['idiot', 'blonde'],
   },
   {
     id: '14',
     url: 'meme-imgs/meme-imgs/14.jpg',
-    keywords: ['black', 'sunglasses'],
+    keywords: ['black', 'baby'],
   },
   {
     id: '15',
     url: 'meme-imgs/meme-imgs/15.jpg',
-    keywords: ['lotr', 'dont'],
+    keywords: ['dog', 'puppy'],
   },
   {
     id: '16',
     url: 'meme-imgs/meme-imgs/16.jpg',
-    keywords: ['funny', 'laugh'],
+    keywords: ['funny', 'laugh', 'black'],
   },
   {
     id: '17',
     url: 'meme-imgs/meme-imgs/17.jpg',
-    keywords: ['peace', 'dictator'],
+    keywords: ['black', 'gay'],
   },
   {
     id: '18',
     url: 'meme-imgs/meme-imgs/18.jpg',
-    keywords: ['look', 'toy story'],
+    keywords: ['cheers', 'funny'],
+  },
+  {
+    id: '19',
+    url: 'meme-imgs/meme-imgs/19.jpg',
+    keywords: ['idiot', 'funny'],
+  },
+  {
+    id: '20',
+    url: 'meme-imgs/meme-imgs/20.jpg',
+    keywords: ['black', 'weird'],
+  },
+  {
+    id: '21',
+    url: 'meme-imgs/meme-imgs/21.jpg',
+    keywords: ['lotr', 'ginger'],
+  },
+  {
+    id: '22',
+    url: 'meme-imgs/meme-imgs/22.jpg',
+    keywords: ['black', 'woman'],
+  },
+  {
+    id: '23',
+    url: 'meme-imgs/meme-imgs/23.jpg',
+    keywords: ['laugh', 'funny'],
+  },
+  {
+    id: '24',
+    url: 'meme-imgs/meme-imgs/24.jpg',
+    keywords: ['dictator', 'gay'],
+  },
+  {
+    id: '25',
+    url: 'meme-imgs/meme-imgs/25.jpg',
+    keywords: ['toy story', 'look'],
   },
 ]
 let gKeywordSearchCountMap = {
@@ -100,7 +135,6 @@ let gKeywordSearchCountMap = {
   Dictator: 24,
   Black: 12,
 }
-const MAP_KEY = 'keywordsMap'
 let gFilterBy = ''
 
 function getImgs() {
@@ -117,8 +151,4 @@ function getSearchCountMap() {
 
 function setFilterBy(filterBy) {
   gFilterBy = filterBy
-}
-
-function getFilter() {
-  return gFilterBy
 }

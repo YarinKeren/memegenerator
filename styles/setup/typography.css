@@ -2,3 +2,8 @@
   font-family: Poppins-Reg;
   src: url('../fonts/Poppins-Regular.ttf');
 }
+
+@font-face {
+  font-family: Inconsolata-Reg;
+  src: url('../fonts/Inconsolata-Regular.ttf');
+}

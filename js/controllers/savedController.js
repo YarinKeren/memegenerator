@@ -1,22 +1,22 @@
-function renderSavedMemes() {
-  const elGallery = getEl('.saved-memes-body')
-  const savedMemes = getSavedMemes()
+'use strict'
 
+function renderSavedMemes() {
+  const savedMemes = getSavedMemes()
   let galleryHTML = ''
 
   savedMemes.forEach((meme, index) => {
-    galleryHTML += `<img src="${meme.imgURL}" alt="" onclick="savedImgSelect(this, ${index})">`
+    galleryHTML += `<img src="${meme.imgURL}"
+    onclick="savedImgSelect(${index})">`
   })
 
+  const elGallery = getEl('.saved-memes-body')
   elGallery.innerHTML = galleryHTML
 }
 
-function savedImgSelect(elImg, memeIndex) {
+function savedImgSelect(memeIndex) {
   const savedMemes = getSavedMemes()
   const selectedMeme = savedMemes[memeIndex]
-  const startIndex = elImg.src.indexOf('meme-imgs')
-  const imagePath = elImg.src.substring(startIndex)
 
-  setSavedImg(imagePath, selectedMeme)
+  setSavedImg(selectedMeme.imgURL, selectedMeme)
   onMemeInit()
 }

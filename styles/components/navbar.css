@@ -30,6 +30,9 @@
 }
 
 .navbar .logo {
+  font-family: Inconsolata-Reg, monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
   margin-right: 150px;
 }
 .navbar .about-link {
@@ -37,7 +40,6 @@
 }
 .navbar .gallery-link {
   place-self: center end;
-  margin-left: 50px;
 }
 .navbar .memes-link {
   place-self: center;

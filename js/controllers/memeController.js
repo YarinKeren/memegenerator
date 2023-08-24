@@ -1,6 +1,8 @@
+'use strict'
+
 let gElCanvas
 let gCtx
-let gIsDrag = false
+let gDraggingLineIdx
 
 function onMemeInit() {
   gElCanvas = getEl('canvas')
@@ -14,7 +16,7 @@ function onMemeInit() {
 
 function renderStickers() {
   const stickers = getStickers()
-  const elStickersContainer = document.querySelector('.stickers')
+  const elStickersContainer = getEl('.stickers')
   let stickersHtml = ''
   stickers.forEach((sticker, idx) => {
     stickersHtml += `<img src="${sticker.url}" alt="" onclick="onAddSticker(${idx})">
@@ -89,11 +91,13 @@ function handleCanvasMouseDown(event) {
 
   for (let i = 0; i < gMeme.lines.length; i++) {
     const line = gMeme.lines[i]
+    const { x, y, width, height } = line.boundingBox
+
     if (
-      clickX >= line.boundingBox.x &&
-      clickX <= line.boundingBox.x + line.boundingBox.width &&
-      clickY >= line.boundingBox.y &&
-      clickY <= line.boundingBox.y + line.boundingBox.height
+      clickX >= x &&
+      clickX <= x + width + 100 &&
+      clickY >= y &&
+      clickY <= y + height
     ) {
       gMeme.selectedLineIdx = i
       gDraggingLineIdx = i
@@ -201,6 +205,7 @@ function handleCanvasTouchEnd(event) {
 
   gDraggingLineIdx = null
 }
+
 function moveLine(direction) {
   const selectedLine = getSelectedLine()
   selectedLine.y += direction * 10
@@ -256,7 +261,9 @@ function renderMeme() {
   const meme = getMeme()
 
   const elImg = new Image()
-  const imgUrl = getImgUrlByIdx(meme.selectedImgIdx)
+  // const imgUrl = getImgUrlByIdx(meme.selectedImgIdx)
+  let imgUrl = meme.url
+  if (!imgUrl) imgUrl = getImgUrlByIdx(meme.selectedImgIdx)
   elImg.src = imgUrl
   meme.imgURL = imgUrl
 
@@ -450,9 +457,100 @@ function onUnderline() {
 }
 
 function toggleShareMenu() {
-  document.querySelector('.tooltip').classList.toggle('show-tooltip')
+  getEl('.tooltip').classList.toggle('show-tooltip')
+}
+
+function onLineClick({ offsetX, offsetY }) {
+  const meme = getMeme()
+
+  let clickedLineIdx = -1
+
+  meme.lines.forEach((line, i) => {
+    let textWidth = gCtx.measureText(line.txt).width
+    if (i === 0) textWidth *= 3
+    const textHeight = line.size
+
+    if (line.sticker) {
+      const stickerImg = new Image()
+      stickerImg.src = line.url
+
+      stickerImg.onload = () => {
+        if (
+          offsetX >= line.x &&
+          offsetX <= line.x + stickerImg.width &&
+          offsetY >= line.y &&
+          offsetY <= line.y + stickerImg.height
+        ) {
+          clickedLineIdx = i
+          if (clickedLineIdx !== -1) {
+            meme.selectedLineIdx = clickedLineIdx
+            renderMeme()
+          }
+        }
+      }
+    } else {
+      if (
+        offsetX >= line.x - textWidth / 2 &&
+        offsetX <= line.x + textWidth / 2 &&
+        offsetY >= line.y - textHeight / 2 &&
+        offsetY <= line.y + textHeight / 2
+      ) {
+        clickedLineIdx = i
+        if (clickedLineIdx !== -1) {
+          meme.selectedLineIdx = clickedLineIdx
+          renderMeme()
+        }
+      }
+    }
+  })
 }
 
 function onSaveMeme() {
   saveMemeToStorage()
+}
+
+function onShareFacebook() {
+  const imgDataUrl = gElCanvas.toDataURL('image/jpeg')
+
+  function onSuccess(uploadedImgUrl) {
+    const url = encodeURIComponent(uploadedImgUrl)
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}&t=${url}`)
+  }
+
+  doUploadImg(imgDataUrl, onSuccess)
+}
+
+function onShareTwitter() {
+  const imgDataUrl = gElCanvas.toDataURL('image/jpeg')
+
+  function onSuccess(uploadedImgUrl) {
+    const url = encodeURIComponent(uploadedImgUrl)
+    window.open(`https://twitter.com/intent/tweet?url=${url}`)
+  }
+
+  doUploadImg(imgDataUrl, onSuccess)
+}
+
+function doUploadImg(imgDataUrl, onSuccess) {
+  const formData = new FormData()
+  formData.append('img', imgDataUrl)
+
+  const XHR = new XMLHttpRequest()
+  XHR.onreadystatechange = () => {
+    if (XHR.readyState !== XMLHttpRequest.DONE) return
+    if (XHR.status !== 200) return console.error('Error uploading image')
+    const { responseText: url } = XHR
+
+    onSuccess(url)
+  }
+  XHR.onerror = (req, ev) => {
+    console.error(
+      'Error connecting to server with request:',
+      req,
+      '\nGot response data:',
+      ev
+    )
+  }
+  XHR.open('POST', '//ca-upload.com/here/upload.php')
+  XHR.send(formData)
 }

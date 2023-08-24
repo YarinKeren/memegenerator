@@ -16,7 +16,7 @@
 .editor-layout {
   height: 70vh;
   background-color: #383b42;
-  padding: 20px;
+  /* padding: 20px; */
   border-radius: 20px;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
