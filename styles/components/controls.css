@@ -43,6 +43,14 @@
   background-color: #fff;
   color: black;
 }
+.controls .btn-facebook {
+  background-color: #fff;
+  color: black;
+}
+.controls .btn-instagram {
+  background-color: #fff;
+  color: black;
+}
 
 .mid-buttons {
   display: flex;

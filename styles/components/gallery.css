@@ -33,6 +33,7 @@
   flex-direction: row;
 }
 .gallery .search-field {
+  color: aliceblue;
   margin-left: 20px;
   padding: 10px 35px 10px 15px;
   background-color: #22252c;

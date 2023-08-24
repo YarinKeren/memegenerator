@@ -1,4 +1,5 @@
-let gImgs = [{ id: 1, url: 'img/1.jpg', keywords: ['funny', 'cat'] }]
+let gImgs = []
+
 let gMeme = {
   imgURL: null,
   selectedImgIdx: 5,
@@ -27,6 +28,10 @@ const SAVED_MEMES = 'memesDB'
 
 function getMeme() {
   return gMeme
+}
+
+function setImgs(imgs) {
+  gImgs = imgs
 }
 
 function getSelectedLine() {
@@ -75,18 +80,10 @@ function setSavedImg(imagePath, meme) {
   gMeme.selectedImgIdx = _getImgIdx(id)
 }
 
-function setImg(imagePath) {
-  const id = makeId()
-
-  gImgs.push({
-    id: id,
-    url: imagePath,
-    keywords: ['cute', 'puppy'],
-  })
-
+function setImg(elImg, imgUrl) {
   gMeme = {
-    imgURL: null,
-    selectedImgIdx: _getImgIdx(id),
+    imgURL: imgUrl,
+    selectedImgIdx: _getImgIdx(elImg.dataset.idx),
     selectedLineIdx: 0,
     lines: [
       {

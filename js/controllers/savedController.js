@@ -8,12 +8,6 @@ function renderSavedMemes() {
     galleryHTML += `<img src="${meme.imgURL}" alt="" onclick="savedImgSelect(this, ${index})">`
   })
 
-  //   for (let i = 0; i < savedMemes.length; i++) {
-  //     galleryHTML += `<img src="meme-imgs/meme-imgs/${
-  //       i + 1
-  //     }.jpg" alt="" onclick="onImgSelect(this)">`
-  //   }
-
   elGallery.innerHTML = galleryHTML
 }
 

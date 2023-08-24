@@ -30,8 +30,15 @@
       <section class="gallery">
         <div class="gallery-header">
           <form class="form">
-            <input type="search" placeholder="Search" class="search-field" />
-            <button type="submit" class="search-button">
+            <input
+              type="search"
+              placeholder="Search"
+              class="search-field"
+              list="keywordsList"
+              oninput="onSetFilterBy(this)"
+            />
+            <datalist id="keywordsList" class="keywordsList"></datalist>
+            <button type="button" class="search-button">
               <i
                 class="fa-solid fa-magnifying-glass fa-xl"
                 style="color: #00c795"
@@ -112,9 +119,27 @@
 
             <div class="share-buttons">
               <div class="tooltip">
-                <span class="btn tooltip-text" onclick="toggleShareMenu()">
+                <span class="tooltip-text" onclick="toggleShareMenu()">
                   <button class="btn btn-save" onclick="onSaveMeme()">
-                    Save Meme
+                    <i
+                      class="fa-solid fa-cloud-arrow-up"
+                      style="color: #000000"
+                    ></i>
+                    Save
+                  </button>
+                  <button class="btn btn-facebook" onclick="onShareFacebook()">
+                    <i
+                      class="fa-brands fa-square-facebook"
+                      style="color: #000000"
+                    ></i>
+                    Facebook
+                  </button>
+                  <button class="btn btn-facebook" onclick="onShareTwitter()">
+                    <i
+                      class="fa-brands fa-x-twitter"
+                      style="color: #000000"
+                    ></i>
+                    (Twitter)
                   </button>
                 </span>
                 <button class="btn btn-share" onclick="toggleShareMenu()">
@@ -135,6 +160,7 @@
       </section>
     </div>
     <script src="js/services/utilService.js"></script>
+    <script src="js/services/galleryService.js"></script>
     <script src="js/services/memeService.js"></script>
     <script src="js/controllers/savedController.js"></script>
     <script src="js/controllers/mainController.js"></script>
