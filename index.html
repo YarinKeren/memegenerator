@@ -12,11 +12,20 @@
   </head>
   <body onload="onInit()">
     <div class="main-layout">
+      <!-- NAVBAR -->
       <nav class="navbar">
         <li class="logo">LOGO</li>
-        <li class="gallery-link">Gallery</li>
-        <li class="about-link">About</li>
+        <li class="nav-item gallery-link active" onclick="moveToGallery()">
+          Gallery
+        </li>
+        <li class="nav-item memes-link" onclick="moveToSaved()">Memes</li>
+        <li class="nav-item about-link">About</li>
       </nav>
+
+      <!-- SAVED MEMES -->
+      <section class="saved-memes hidden">
+        <article class="saved-memes-body"></article>
+      </section>
 
       <section class="gallery">
         <div class="gallery-header">
@@ -102,10 +111,18 @@
             <div class="stickers"></div>
 
             <div class="share-buttons">
-              <button class="btn btn-share">
-                <i class="fa-solid fa-share-nodes" style="color: #000000"></i>
-                Share
-              </button>
+              <div class="tooltip">
+                <span class="btn tooltip-text" onclick="toggleShareMenu()">
+                  <button class="btn btn-save" onclick="onSaveMeme()">
+                    Save Meme
+                  </button>
+                </span>
+                <button class="btn btn-share" onclick="toggleShareMenu()">
+                  <i class="fa-solid fa-share-nodes" style="color: #000000"></i>
+                  Share
+                </button>
+              </div>
+
               <a href="#" onclick="downloadImg(this)" download="my-img.jpg">
                 <button class="btn btn-download">
                   <i class="fa-solid fa-download" style="color: #ffffff"></i>
@@ -117,9 +134,11 @@
         </div>
       </section>
     </div>
-    <script src="js/services/util-service.js"></script>
-    <script src="js/services/meme-service.js"></script>
-    <script src="js/memeController.js"></script>
-    <script src="js/galleryController.js"></script>
+    <script src="js/services/utilService.js"></script>
+    <script src="js/services/memeService.js"></script>
+    <script src="js/controllers/savedController.js"></script>
+    <script src="js/controllers/mainController.js"></script>
+    <script src="js/controllers/memeController.js"></script>
+    <script src="js/controllers/galleryController.js"></script>
   </body>
 </html>

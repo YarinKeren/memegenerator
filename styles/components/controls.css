@@ -39,6 +39,10 @@
 .controls .btn-delete {
   background-color: #da2e36;
 }
+.controls .btn-save {
+  background-color: #fff;
+  color: black;
+}
 
 .mid-buttons {
   display: flex;

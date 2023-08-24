@@ -1,5 +1,6 @@
 let gImgs = [{ id: 1, url: 'img/1.jpg', keywords: ['funny', 'cat'] }]
 let gMeme = {
+  imgURL: null,
   selectedImgIdx: 5,
   selectedLineIdx: 0,
   lines: [
@@ -22,6 +23,7 @@ let gMeme = {
   ],
 }
 let gKeywordSearchCountMap = { funny: 12, cat: 16, baby: 2 }
+const SAVED_MEMES = 'memesDB'
 
 function getMeme() {
   return gMeme
@@ -59,6 +61,20 @@ function _getImgIdx(imgId) {
   return gImgs.findIndex((img) => img.id === imgId)
 }
 
+function setSavedImg(imagePath, meme) {
+  const id = makeId()
+
+  gImgs.push({
+    id: id,
+    url: imagePath,
+    keywords: ['cute', 'puppy'],
+  })
+
+  gMeme = meme
+
+  gMeme.selectedImgIdx = _getImgIdx(id)
+}
+
 function setImg(imagePath) {
   const id = makeId()
 
@@ -68,7 +84,29 @@ function setImg(imagePath) {
     keywords: ['cute', 'puppy'],
   })
 
-  gMeme.selectedImgIdx = _getImgIdx(id)
+  gMeme = {
+    imgURL: null,
+    selectedImgIdx: _getImgIdx(id),
+    selectedLineIdx: 0,
+    lines: [
+      {
+        txt: 'I dont use jQuery',
+        size: 30,
+        color: 'white',
+        align: 'center',
+        font: 'Impact',
+        underline: false,
+      },
+      {
+        txt: 'use JS',
+        size: 30,
+        color: 'white',
+        align: 'center',
+        font: 'Impact',
+        underline: false,
+      },
+    ],
+  }
 }
 
 function addLine() {
@@ -98,4 +136,15 @@ function deleteLine() {
 
 function setAlignment(alignment) {
   gMeme.lines[gMeme.selectedLineIdx].align = alignment
+}
+
+function saveMemeToStorage() {
+  let savedMemes = loadFromStorage(SAVED_MEMES)
+  if (!savedMemes || !savedMemes.length) savedMemes = [gMeme]
+  else savedMemes.push(gMeme)
+  saveToStorage(SAVED_MEMES, savedMemes)
+}
+
+function getSavedMemes() {
+  return loadFromStorage(SAVED_MEMES)
 }

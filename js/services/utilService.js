@@ -17,3 +17,13 @@ function getRandomInt(min, max) {
   max = Math.floor(max)
   return Math.floor(Math.random() * (max - min) + min) // The maximum is exclusive and the minimum is inclusive
 }
+
+function saveToStorage(key, value) {
+  const str = JSON.stringify(value)
+  localStorage.setItem(key, str)
+}
+
+function loadFromStorage(key) {
+  const str = localStorage.getItem(key)
+  return JSON.parse(str)
+}

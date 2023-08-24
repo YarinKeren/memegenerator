@@ -1,7 +1,3 @@
-function onInit() {
-  renderGallery()
-}
-
 function renderGallery() {
   const elGallery = getEl('.gallery-body')
   let galleryHTML = ''

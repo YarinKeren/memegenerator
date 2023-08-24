@@ -11,10 +11,10 @@ function onMemeInit() {
 }
 
 function toggleView() {
-  const gallery = getEl('.gallery')
-  gallery.classList.add('hidden')
-  const elEditor = getEl('.editor')
-  elEditor.classList.remove('hidden')
+  getEl('.gallery').classList.add('hidden')
+  getEl('.editor').classList.remove('hidden')
+  getEl('.gallery-link').classList.remove('active')
+  getEl('.saved-memes').classList.add('hidden')
 }
 
 function addListeners() {
@@ -66,6 +66,7 @@ function renderMeme() {
   const elImg = new Image()
   const imgUrl = getImgUrlByIdx(meme.selectedImgIdx)
   elImg.src = imgUrl
+  meme.imgURL = imgUrl
 
   elImg.onload = () => {
     coverCanvasWithImg(elImg)
@@ -85,7 +86,6 @@ function renderMeme() {
   const elTextInput = getEl('.text-input')
   if (meme.lines.length && meme.lines[meme.selectedLineIdx])
     elTextInput.value = meme.lines[meme.selectedLineIdx].txt || ''
-  // else elTextInput.value = ''
 }
 
 function coverCanvasWithImg(elImg) {
@@ -214,4 +214,12 @@ function onUnderline() {
     renderMeme()
   }
   renderMeme()
+}
+
+function toggleShareMenu() {
+  document.querySelector('.tooltip').classList.toggle('show-tooltip')
+}
+
+function onSaveMeme() {
+  saveMemeToStorage()
 }

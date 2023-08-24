@@ -1,7 +1,6 @@
 .navbar {
   display: grid;
-  /* grid-auto-flow: column; */
-  grid-template-columns: 4fr 2fr 2fr;
+  grid-template-columns: 4fr 2fr 2fr 2fr;
 
   place-items: center;
 
@@ -22,6 +21,14 @@
   color: aliceblue;
 }
 
+.nav-item:not(.logo):hover {
+  cursor: pointer;
+  color: rgba(48, 187, 115, 1);
+  background-color: aliceblue;
+  padding: 0px 10px;
+  border-radius: 12px;
+}
+
 .navbar .logo {
   margin-right: 150px;
 }
@@ -29,5 +36,17 @@
   place-self: center start;
 }
 .navbar .gallery-link {
+  place-self: center end;
   margin-left: 50px;
+}
+.navbar .memes-link {
+  place-self: center;
+}
+
+.active {
+  cursor: pointer;
+  color: rgba(48, 187, 115, 1);
+  background-color: aliceblue;
+  padding: 0px 10px;
+  border-radius: 12px;
 }
