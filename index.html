@@ -14,12 +14,27 @@
     <main class="main-layout">
       <!-- NAVBAR -->
       <nav class="navbar">
-        <li class="logo">Meme-GeneratØr</li>
-        <li class="nav-item gallery-link active" onclick="moveToGallery()">
+        <li class="logo" data-trans="logo">Meme-GeneratØr</li>
+        <li
+          class="nav-item gallery-link active"
+          onclick="moveToGallery()"
+          data-trans="gallery"
+        >
           Gallery
         </li>
-        <li class="nav-item memes-link" onclick="moveToSaved()">Memes</li>
-        <li class="nav-item about-link">About</li>
+        <li
+          class="nav-item memes-link"
+          onclick="moveToSaved()"
+          data-trans="memes"
+        >
+          Memes
+        </li>
+        <li class="nav-item about-link" data-trans="about">About</li>
+        <li class="language-toggle">
+          <button class="btn btn-language" onclick="onToggleLanguage(this)">
+            Heb
+          </button>
+        </li>
       </nav>
       <!-- SAVED MEMES -->
       <section class="saved-memes hidden">
@@ -183,6 +198,7 @@
       </section>
       <!--Close Main Layout-->
     </main>
+    <script src="js/services/i18nService.js"></script>
     <script src="js/services/uploadFromLocalService.js"></script>
     <script src="js/services/utilService.js"></script>
     <script src="js/services/galleryService.js"></script>

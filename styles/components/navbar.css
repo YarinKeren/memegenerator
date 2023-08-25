@@ -1,6 +1,6 @@
 .navbar {
   display: grid;
-  grid-template-columns: 4fr 2fr 2fr 2fr;
+  grid-template-columns: 4fr 1fr 1fr 1fr 1fr;
 
   place-items: center;
 
@@ -30,7 +30,7 @@
 }
 
 .navbar .logo {
-  font-family: Inconsolata-Reg, monospace;
+  font-family: Inconsolata-Reg, monospace, Rubik-Reg;
   text-transform: uppercase;
   letter-spacing: 0.2em;
   margin-right: 150px;
@@ -43,6 +43,19 @@
 }
 .navbar .memes-link {
   place-self: center;
+}
+.navbar .language-toggle {
+  place-self: center start;
+}
+
+.navbar .btn {
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 12px;
+  color: black;
+  border: none;
+  box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px,
+    rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
 }
 
 .active {

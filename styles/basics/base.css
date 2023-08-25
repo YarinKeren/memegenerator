@@ -4,10 +4,12 @@
 
 body {
   margin: 0;
-  font-family: Poppins-Reg;
-  height: 100vh;
+  font-family: Poppins-Reg, Rubik-Reg;
+  /* height: 100vh; */
 }
-
+body.rtl {
+  direction: rtl;
+}
 img {
   width: 100%;
 }

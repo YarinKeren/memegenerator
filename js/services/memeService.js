@@ -31,7 +31,8 @@ function getSelectedLine() {
 }
 
 function getImgUrlByIdx(imgIdx) {
-  return gImgs[imgIdx].url
+  if (gImgs[imgIdx] && gImgs[imgIdx].url) return gImgs[imgIdx].url
+  else return `meme-imgs/meme-imgs/${getRandomInt(1, 19)}.jpg`
 }
 
 function getImgByIdx(idx) {

@@ -30,3 +30,27 @@ function moveToSaved() {
   getEl('.saved-memes').classList.remove('hidden')
   renderSavedMemes()
 }
+
+function onToggleLanguage(elBtn) {
+  const lang = elBtn.innerText
+  if (lang === 'Heb') {
+    onSetLang('he')
+    elBtn.innerText = 'Eng'
+  } else {
+    onSetLang('en')
+    elBtn.innerText = 'Heb'
+  }
+}
+
+function onSetLang(lang) {
+  setLang(lang)
+  changeBodyDirection(lang)
+  doTrans()
+  // renderBooks()
+  // renderCards()
+}
+
+function changeBodyDirection(lang) {
+  if (lang === 'he') document.body.classList.add('rtl')
+  else document.body.classList.remove('rtl')
+}

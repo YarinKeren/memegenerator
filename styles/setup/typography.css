@@ -7,3 +7,8 @@
   font-family: Inconsolata-Reg;
   src: url('../fonts/Inconsolata-Regular.ttf');
 }
+
+@font-face {
+  font-family: Rubik-Reg;
+  src: url('../fonts/Rubik-Regular.ttf');
+}

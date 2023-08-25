@@ -261,7 +261,6 @@ function renderMeme() {
   const meme = getMeme()
 
   const elImg = new Image()
-  // const imgUrl = getImgUrlByIdx(meme.selectedImgIdx)
   let imgUrl = meme.url
   if (!imgUrl) imgUrl = getImgUrlByIdx(meme.selectedImgIdx)
   elImg.src = imgUrl

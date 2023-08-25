@@ -11,8 +11,20 @@
     place-self: start;
   }
 
+  .main-layout {
+    max-height: 100vh;
+    display: grid;
+    grid-template-rows: 1fr 8fr;
+
+    background-color: #22252c;
+    padding: 20px;
+  }
+  .main-layout .gallery {
+    grid-row: 2/6;
+  }
   .gallery-body {
     grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    width: 90%;
   }
   .gallery img {
     border-radius: 30px;
@@ -21,6 +33,7 @@
 
   .gallery-header {
     gap: 10px;
+    width: 90%;
   }
 
   .gallery .search-field {
@@ -41,6 +54,9 @@
   }
   .controls .stickers img {
     width: 20%;
+  }
+  .navbar {
+    width: 90%;
   }
   .navbar .logo {
     margin-right: 70px;
