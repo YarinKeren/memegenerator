@@ -13,12 +13,10 @@
 
   .main-layout {
     max-height: 100vh;
-    width: 70%;
-    display: grid;
+
     grid-template-rows: 1fr 8fr;
 
-    background-color: #22252c;
-    padding: 20px;
+    padding: 0px;
   }
   .main-layout .gallery {
     grid-row: 2/6;
@@ -42,14 +40,14 @@
     align-items: center;
   }
   .gallery .search-field {
-    margin-left: 0px;
-    margin-right: 20px;
+    margin-inline-start: 0px;
+    margin-inline-end: 20px;
     padding: 10px 5px;
     font-size: 0.6em;
   }
   .gallery .search-button {
-    margin-left: -70px;
-    margin-right: 20px;
+    margin-inline-start: -70px;
+    margin-inline-end: 20px;
   }
   .gallery .search-words {
     order: -1;
@@ -57,7 +55,7 @@
   }
 
   .controls {
-    margin-right: 0px;
+    margin-inline-end: 0px;
   }
   .controls .stickers {
     flex-wrap: wrap;
@@ -76,7 +74,7 @@
   .navbar .logo {
     grid-row: 1;
     grid-column: 1/5;
-    margin-right: 0px;
+    margin-inline-end: 0px;
   }
   .navbar .about-link {
     grid-row: 2;

@@ -1,6 +1,6 @@
 /* width */
 ::-webkit-scrollbar {
-  margin-right: 12px;
+  margin-inline-end: 12px;
   width: 10px;
 }
 

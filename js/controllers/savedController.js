@@ -9,8 +9,7 @@ function renderSavedMemes() {
     onclick="savedImgSelect(${index})">`
   })
 
-  const elGallery = getEl('.saved-memes-body')
-  elGallery.innerHTML = galleryHTML
+  setElHtml('.saved-memes-body', galleryHTML)
 }
 
 function savedImgSelect(memeIndex) {
@@ -18,5 +17,6 @@ function savedImgSelect(memeIndex) {
   const selectedMeme = savedMemes[memeIndex]
 
   setSavedImg(selectedMeme.imgURL, selectedMeme)
+  moveToEditor()
   onMemeInit()
 }

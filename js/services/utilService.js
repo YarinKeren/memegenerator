@@ -8,6 +8,19 @@ function getEls(selector, el = document) {
   return el.querySelectorAll(selector)
 }
 
+function removeClass(className, selector) {
+  document.querySelector(selector).classList.remove(className)
+}
+
+function addClass(className, selector) {
+  document.querySelector(selector).classList.add(className)
+}
+
+function setElHtml(selector, html) {
+  const el = document.querySelector(selector)
+  el.innerHTML = html
+}
+
 function makeId(length = 6) {
   let id = ''
   let possible =

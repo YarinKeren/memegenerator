@@ -4,10 +4,11 @@ let gElCanvas
 let gCtx
 let gDraggingLineIdx
 
+let gIsTouchActive = false
+
 function onMemeInit() {
   gElCanvas = getEl('canvas')
   gCtx = gElCanvas.getContext('2d')
-  toggleView()
   addListeners()
   renderMeme()
   renderStickers()
@@ -16,22 +17,23 @@ function onMemeInit() {
 
 function renderStickers() {
   const stickers = getStickers()
-  const elStickersContainer = getEl('.stickers')
-  let stickersHtml = ''
-  stickers.forEach((sticker, idx) => {
-    stickersHtml += `<img src="${sticker.url}" alt="" onclick="onAddSticker(${idx})">
-    `
-  })
-  elStickersContainer.innerHTML = stickersHtml
+
+  const stickersHtml = stickers
+    .map(
+      (sticker, idx) =>
+        `<img src="${sticker.url}" alt="" onclick="onAddSticker(${idx})">`
+    )
+    .join('')
+
+  setElHtml('.stickers', stickersHtml)
 }
 
 function onAddSticker(stickerIdx) {
-  const selectedSticker = getStickers()[stickerIdx]
+  const sticker = getSelectedSticker(stickerIdx)
+
   const newStickerLine = {
     sticker: true,
-    url: selectedSticker.url,
-    // x: gElCanvas.width / 2,
-    // y: gElCanvas.height / 2,
+    url: sticker.url,
     boundingBox: {
       x: 150,
       y: 150,
@@ -39,355 +41,309 @@ function onAddSticker(stickerIdx) {
       height: 50,
     },
   }
-  gMeme.lines.push(newStickerLine)
-  gMeme.selectedLineIdx = gMeme.lines.length - 1 // Set the selected line to the new sticker
-  renderMeme() // Render the meme with the new sticker selected
-}
 
-function toggleView() {
-  getEl('.gallery').classList.add('hidden')
-  getEl('.editor').classList.remove('hidden')
-  getEl('.gallery-link').classList.remove('active')
-  getEl('.saved-memes').classList.add('hidden')
+  addStickerLine(newStickerLine)
+  updateSelectedLine()
+  renderMeme()
 }
 
 function addListeners() {
-  window.addEventListener('resize', () => {
-    resizeCanvas()
+  window.addEventListener('resize', resizeCanvas)
+  getEl('.font-dropdown').addEventListener('change', onChangeFont)
+  document.addEventListener('keydown', handleArrowMove)
+
+  addCanvasEventListeners()
+}
+
+function addCanvasEventListeners() {
+  gElCanvas.addEventListener('click', onLineClick)
+  gElCanvas.addEventListener('mousedown', handleCanvasInteractionStart)
+  gElCanvas.addEventListener('touchstart', handleCanvasInteractionStart)
+}
+
+function handleCanvasInteractionStart(ev) {
+  ev.preventDefault()
+  const { type, touches, offsetX, offsetY } = ev
+
+  gIsTouchActive = type === 'touchstart'
+
+  const rect = gElCanvas.getBoundingClientRect()
+  const scaleX = gElCanvas.width / rect.width
+  const scaleY = gElCanvas.height / rect.height
+
+  const interactionX = gIsTouchActive ? touches[0].clientX * scaleX : offsetX
+  const interactionY = gIsTouchActive ? touches[0].clientY * scaleY : offsetY
+
+  gDraggingLineIdx = findLineAtPosition(interactionX, interactionY)
+
+  gElCanvas.addEventListener(
+    gIsTouchActive ? 'touchmove' : 'mousemove',
+    handleCanvasInteractionMove
+  )
+  document.addEventListener(
+    gIsTouchActive ? 'touchend' : 'mouseup',
+    handleCanvasInteractionEnd
+  )
+}
+
+function findLineAtPosition(x, y) {
+  console.log('x', x)
+  console.log('y', y)
+  const memeLines = getLines()
+
+  return memeLines.findIndex(line => {
+    const { x: bx, y: by, width, height } = line.boundingBox
+    return x >= bx && x <= bx + width && y >= by && y <= by + height
+  })
+}
+
+function handleCanvasInteractionMove(ev) {
+  const { touches } = ev
+  ev.preventDefault()
+
+  const rect = gElCanvas.getBoundingClientRect()
+  const scaleX = gElCanvas.width / rect.width
+  const scaleY = gElCanvas.height / rect.height
+
+  const moveX = gIsTouchActive ? touches[0].clientX * scaleX : ev.offsetX
+  const moveY = gIsTouchActive ? touches[0].clientY * scaleY : ev.offsetY
+
+  handleInteractionMove(moveX, moveY)
+
+  renderMeme()
+}
+
+function handleInteractionMove(moveX, moveY) {
+  if (gDraggingLineIdx === -1) return
+
+  // const line = getLineByIdx(gDraggingLineIdx)
+  const line = getSelectedLine()
+  const { boundingBox, align } = line
+
+  if (line.sticker) {
+    boundingBox.x = moveX
+    boundingBox.y = moveY
+  } else {
+    line.prevAlign = align
+    line.align = 'left'
+    line.x = moveX
+    line.y = moveY
+  }
+}
+
+function handleCanvasInteractionEnd() {
+  gElCanvas.removeEventListener(
+    gIsTouchActive ? 'touchmove' : 'mousemove',
+    handleCanvasInteractionMove
+  )
+  document.removeEventListener(
+    gIsTouchActive ? 'touchend' : 'mouseup',
+    handleCanvasInteractionEnd
+  )
+
+  if (gDraggingLineIdx !== -1) {
+    const line = getLineByIdx(gDraggingLineIdx)
+    if (line && line.prevAlign) {
+      line.align = line.prevAlign
+      delete line.prevAlign
+    }
+  }
+
+  gDraggingLineIdx = -1
+}
+
+function handleArrowMove(event) {
+  if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+    const moveDirection = event.key === 'ArrowUp' ? -1 : 1
+    const selectedLine = getSelectedLine()
+    selectedLine.y += moveDirection * 10
     renderMeme()
-  })
-  gElCanvas.addEventListener('click', (event) => {
-    onLineClick(event)
-  })
-  getEl('.font-dropdown').addEventListener('change', (event) => {
-    onChangeFont(event.target)
-  })
-  document.addEventListener('keydown', (event) => {
-    if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
-      moveLine(event.key === 'ArrowUp' ? -1 : 1) // Move line up or down
-    }
-  })
-  addMouseListeners()
-  addTouchListeners()
-}
-
-function addMouseListeners() {
-  gElCanvas.addEventListener('mousedown', handleCanvasMouseDown)
-}
-
-function addTouchListeners() {
-  gElCanvas.addEventListener('touchstart', handleCanvasTouchStart)
-  gElCanvas.addEventListener('touchmove', handleCanvasTouchMove)
-  gElCanvas.addEventListener('touchend', handleCanvasTouchEnd)
-}
-
-function handleCanvasMouseDown(event) {
-  const rect = gElCanvas.getBoundingClientRect()
-  const scaleX = gElCanvas.width / rect.width
-  const scaleY = gElCanvas.height / rect.height
-
-  const clickX = event.offsetX * scaleX
-  const clickY = event.offsetY * scaleY
-
-  for (let i = 0; i < gMeme.lines.length; i++) {
-    const line = gMeme.lines[i]
-    const { x, y, width, height } = line.boundingBox
-
-    if (
-      clickX >= x &&
-      clickX <= x + width + 100 &&
-      clickY >= y &&
-      clickY <= y + height
-    ) {
-      gMeme.selectedLineIdx = i
-      gDraggingLineIdx = i
-      renderMeme()
-
-      document.addEventListener('mousemove', handleCanvasMove)
-      document.addEventListener('mouseup', handleCanvasRelease)
-      break
-    }
   }
-}
-
-function handleCanvasMove(event) {
-  if (gDraggingLineIdx === null) return
-
-  const rect = gElCanvas.getBoundingClientRect()
-  const scaleX = gElCanvas.width / rect.width
-  const scaleY = gElCanvas.height / rect.height
-
-  const moveX = event.offsetX * scaleX
-  const moveY = event.offsetY * scaleY
-
-  const line = gMeme.lines[gDraggingLineIdx]
-  if (line.sticker) {
-    line.boundingBox.x = moveX
-    line.boundingBox.y = moveY
-  } else {
-    line.prevAlign = line.align
-    line.align = 'left'
-    line.x = moveX
-    line.y = moveY
-  }
-  renderMeme()
-}
-
-function handleCanvasRelease(event) {
-  document.removeEventListener('mousemove', handleCanvasMove)
-  document.removeEventListener('mouseup', handleCanvasRelease)
-
-  const line = gMeme.lines[gDraggingLineIdx]
-  if (line && line.prevAlign) {
-    line.align = line.prevAlign
-    delete line.prevAlign
-  }
-
-  gDraggingLineIdx = null
-}
-
-function handleCanvasTouchStart(event) {
-  const rect = gElCanvas.getBoundingClientRect()
-  const touch = event.touches[0]
-
-  const scale = gElCanvas.width / gElCanvas.getBoundingClientRect().width
-  const touchX = (touch.clientX - rect.left) * scale
-  const touchY = (touch.clientY - rect.top) * scale
-
-  for (let i = 0; i < gMeme.lines.length; i++) {
-    const line = gMeme.lines[i]
-    if (
-      touchX >= line.boundingBox.x &&
-      touchX <= line.boundingBox.x + line.boundingBox.width &&
-      touchY >= line.boundingBox.y &&
-      touchY <= line.boundingBox.y + line.boundingBox.height
-    ) {
-      gMeme.selectedLineIdx = i
-      gDraggingLineIdx = i
-      renderMeme()
-      break
-    }
-  }
-}
-
-function handleCanvasTouchMove(event) {
-  if (gDraggingLineIdx === null) return
-
-  const rect = gElCanvas.getBoundingClientRect()
-  const touch = event.touches[0]
-
-  const scale = gElCanvas.width / gElCanvas.getBoundingClientRect().width
-  const moveX = (touch.clientX - rect.left) * scale
-  const moveY = (touch.clientY - rect.top) * scale
-
-  const line = gMeme.lines[gDraggingLineIdx]
-
-  if (line.sticker) {
-    line.boundingBox.x = moveX
-    line.boundingBox.y = moveY
-  } else {
-    line.prevAlign = line.align
-    line.align = 'left'
-    line.x = moveX
-    line.y = moveY
-  }
-
-  renderMeme()
-  event.preventDefault()
-}
-
-function handleCanvasTouchEnd(event) {
-  const line = gMeme.lines[gDraggingLineIdx]
-  if (line && line.prevAlign) {
-    line.align = line.prevAlign
-    delete line.prevAlign
-  }
-
-  gDraggingLineIdx = null
-}
-
-function moveLine(direction) {
-  const selectedLine = getSelectedLine()
-  selectedLine.y += direction * 10
-  renderMeme()
 }
 
 function onLineClick({ offsetX, offsetY }) {
   const meme = getMeme()
+  const clickedLineIdx = findLineAtPosition(offsetX, offsetY)
 
-  let clickedLineIdx = -1
-
-  meme.lines.forEach((line, i) => {
-    let textWidth = gCtx.measureText(line.txt).width
-    if (i === 0) textWidth *= 3
-    const textHeight = line.size
-
-    if (line.sticker) {
-      const stickerImg = new Image()
-      stickerImg.src = line.url
-
-      stickerImg.onload = () => {
-        if (
-          offsetX >= line.x &&
-          offsetX <= line.x + stickerImg.width &&
-          offsetY >= line.y &&
-          offsetY <= line.y + stickerImg.height
-        ) {
-          clickedLineIdx = i
-          if (clickedLineIdx !== -1) {
-            meme.selectedLineIdx = clickedLineIdx
-            renderMeme()
-          }
-        }
-      }
-    } else {
-      if (
-        offsetX >= line.x - textWidth / 2 &&
-        offsetX <= line.x + textWidth / 2 &&
-        offsetY >= line.y - textHeight / 2 &&
-        offsetY <= line.y + textHeight / 2
-      ) {
-        clickedLineIdx = i
-        if (clickedLineIdx !== -1) {
-          meme.selectedLineIdx = clickedLineIdx
-          renderMeme()
-        }
-      }
-    }
-  })
+  if (clickedLineIdx !== -1) {
+    meme.selectedLineIdx = clickedLineIdx
+    renderMeme()
+  }
 }
+
+// function onLineClick({ offsetX, offsetY }) {
+//   const meme = getMeme()
+
+//   let clickedLineIdx = -1
+
+//   meme.lines.forEach((line, i) => {
+//     let textWidth = gCtx.measureText(line.txt).width
+//     if (i === 0) textWidth *= 3
+//     const textHeight = line.size
+
+//     if (line.sticker) {
+//       const stickerImg = new Image()
+//       stickerImg.src = line.url
+
+//       stickerImg.onload = () => {
+//         if (
+//           offsetX >= line.x &&
+//           offsetX <= line.x + stickerImg.width &&
+//           offsetY >= line.y &&
+//           offsetY <= line.y + stickerImg.height
+//         ) {
+//           clickedLineIdx = i
+//           if (clickedLineIdx !== -1) {
+//             meme.selectedLineIdx = clickedLineIdx
+//             renderMeme()
+//           }
+//         }
+//       }
+//     } else {
+//       if (
+//         offsetX >= line.x - textWidth / 2 &&
+//         offsetX <= line.x + textWidth / 2 &&
+//         offsetY >= line.y - textHeight / 2 &&
+//         offsetY <= line.y + textHeight / 2
+//       ) {
+//         clickedLineIdx = i
+//         if (clickedLineIdx !== -1) {
+//           meme.selectedLineIdx = clickedLineIdx
+//           renderMeme()
+//         }
+//       }
+//     }
+//   })
+// }
 
 function renderMeme() {
   const meme = getMeme()
-
   const elImg = new Image()
-  let imgUrl = meme.url
-  if (!imgUrl) imgUrl = getImgUrlByIdx(meme.selectedImgIdx)
-  elImg.src = imgUrl
-  meme.imgURL = imgUrl
+
+  elImg.src = meme.url || getImgUrlByIdx(meme.selectedImgIdx)
+  meme.imgURL = elImg.src
 
   elImg.onload = () => {
     coverCanvasWithImg(elImg)
 
     meme.lines.forEach((line, i) => {
       if (line.sticker) {
-        const stickerImg = new Image()
-        stickerImg.src = line.url
-        stickerImg.onload = () => {
-          if (i === meme.selectedLineIdx) {
-            gCtx.strokeStyle = 'red'
-            gCtx.lineWidth = 1
-            gCtx.strokeRect(
-              line.boundingBox.x,
-              line.boundingBox.y,
-              line.boundingBox.width,
-              line.boundingBox.height
-            )
-            gCtx.strokeStyle = 'black'
-          }
-          gCtx.drawImage(
-            stickerImg,
-            line.boundingBox.x,
-            line.boundingBox.y,
-            line.boundingBox.width,
-            line.boundingBox.height
-          )
-        }
+        renderSticker(line, i, meme)
       } else {
-        if (!line.x || !line.y) {
-          line.x = gElCanvas.width / 2
-          line.y =
-            (gElCanvas.height / (meme.lines.length + 1)) * (i + 1) +
-            line.size / 2
-        }
-        const isSelected = i === meme.selectedLineIdx
-
-        // Calculate textWidth and textHeight based on the line's text and font size
-        const textWidth = gCtx.measureText(line.txt).width
-        const textHeight = line.size
-
-        // Calculate the bounding box dimensions
-        const boundingBox = {
-          x: line.x - textWidth / 2,
-          y: line.y - textHeight / 2,
-          width: textWidth,
-          height: textHeight,
-        }
-
-        // Set the bounding box property
-        line.boundingBox = boundingBox
-
-        drawText(line, isSelected)
+        renderText(line, i, meme)
       }
     })
   }
 
   const elTextInput = getEl('.text-input')
-  if (meme.lines.length && meme.lines[meme.selectedLineIdx])
+  if (meme.lines.length && meme.lines[meme.selectedLineIdx]) {
     elTextInput.value = meme.lines[meme.selectedLineIdx].txt || ''
+  }
+}
+
+function renderSticker(line, i, meme) {
+  const stickerImg = new Image()
+  const { x, y, width, height } = line.boundingBox
+
+  stickerImg.onload = () => {
+    if (i === meme.selectedLineIdx) {
+      gCtx.strokeStyle = 'red'
+      gCtx.lineWidth = 1
+      gCtx.strokeRect(x, y, width, height)
+      gCtx.strokeStyle = 'black'
+    }
+    gCtx.drawImage(stickerImg, x, y, width, height)
+  }
+  stickerImg.src = line.url
+}
+
+function renderText(line, i, meme) {
+  let { x, y, size, txt } = line
+  if (!x || !y) {
+    line.x = gElCanvas.width / 2
+    line.y = (gElCanvas.height / (meme.lines.length + 1)) * (i + 1) + size / 2
+  }
+
+  const textMetrics = gCtx.measureText(txt)
+  const textWidth =
+    textMetrics.actualBoundingBoxRight + textMetrics.actualBoundingBoxLeft
+
+  const boundingBox = {
+    x: x - textWidth / 2,
+    y: y - size / 2,
+    width: textWidth,
+    height: size,
+  }
+
+  line.boundingBox = boundingBox
+
+  const isSelected = i === meme.selectedLineIdx
+  drawText(line, isSelected)
 }
 
 function coverCanvasWithImg(elImg) {
-  gElCanvas.height =
-    (elImg.naturalHeight / elImg.naturalWidth) * gElCanvas.width
+  const { naturalWidth, naturalHeight } = elImg
+
+  gElCanvas.height = (naturalHeight / naturalWidth) * gElCanvas.width
   gCtx.drawImage(elImg, 0, 0, gElCanvas.width, gElCanvas.height)
 }
 
 function resizeCanvas() {
-  const elContainer = getEl('.canvas-container')
-  gElCanvas.width = elContainer.offsetWidth
-  gElCanvas.height = elContainer.offsetHeight
+  const { offsetWidth, offsetHeight } = getEl('.canvas-container')
+  gElCanvas.width = offsetWidth
+  gElCanvas.height = offsetHeight
+  renderMeme()
 }
 
 function drawText(line, isSelected) {
-  gCtx.lineWidth = 3
-  gCtx.strokeStyle = 'black'
-  gCtx.textAlign = line.align
-  gCtx.textBaseline = 'middle'
-  const textHeight = 30
+  const { size: textHeight, txt, font, color, x, y } = line
   const padding = 5
 
-  let textWidth = gCtx.measureText(line.txt).width
-  if (gMeme.selectedLineIdx === 0) textWidth *= 2.7
+  gCtx.lineWidth = 3
+  gCtx.textAlign = line.align
+  gCtx.strokeStyle = 'black'
+  gCtx.textBaseline = 'middle'
+
+  gCtx.font = `${textHeight}px ${font}`
+  gCtx.fillStyle = color
+  gCtx.strokeText(txt, x, y)
+  gCtx.fillText(txt, x, y)
+
+  const textWidth = gCtx.measureText(txt).width
 
   if (isSelected) {
-    let x = line.x
-    if (line.align === 'center') {
-      x = gElCanvas.width / 2 - textWidth / 2
-    } else if (line.align === 'right') {
-      x = gElCanvas.width / 2 - textWidth
-    }
-    gCtx.beginPath()
-    gCtx.rect(
-      x - padding,
-      line.y - textHeight + padding,
-      textWidth + 2 * padding,
-      textHeight + 2 * padding + 10
-    )
-    gCtx.strokeStyle = 'red'
-    gCtx.lineWidth = 1
-    gCtx.stroke()
-    gCtx.strokeStyle = 'black'
-    gCtx.font = `${line.size}px ${line.font}`
-    gCtx.fillStyle = line.color
-    drawUnderline(line)
-  } else {
-    gCtx.font = `${line.size}px ${line.font}`
-    gCtx.fillStyle = line.color
-    drawUnderline(line)
+    drawSelectionBox(line, textWidth, textHeight, padding)
   }
 
-  gCtx.strokeText(line.txt, line.x, line.y)
-  gCtx.fillText(line.txt, line.x, line.y)
+  drawUnderline(line)
 }
 
-function drawUnderline(line) {
+function drawSelectionBox({ x, align, y }, textWidth, textHeight, padding) {
+  if (align === 'center') {
+    x = gElCanvas.width / 2 - textWidth / 2
+  } else if (align === 'right') {
+    x = gElCanvas.width / 2 - textWidth
+  }
+  gCtx.beginPath()
+  gCtx.rect(
+    x - padding,
+    y - textHeight + padding,
+    textWidth + 2 * padding,
+    textHeight + 2 * padding + 10
+  )
+  gCtx.strokeStyle = 'red'
+  gCtx.lineWidth = 1
+  gCtx.stroke()
+  gCtx.strokeStyle = 'black'
+}
+
+function drawUnderline({ underline, txt, x, y }) {
   const padding = 5
-  let textWidth = gCtx.measureText(line.txt).width
-  if (line.underline) {
+  const textWidth = gCtx.measureText(txt).width
+  if (underline) {
     gCtx.beginPath()
-    gCtx.moveTo(line.x - textWidth / 2, line.y + padding * 4)
-    gCtx.lineTo(line.x + textWidth / 2, line.y + padding * 4)
+    gCtx.moveTo(x - textWidth / 2, y + padding * 4)
+    gCtx.lineTo(x + textWidth / 2, y + padding * 4)
     gCtx.lineWidth = 2
     gCtx.stroke()
   }
@@ -404,8 +360,7 @@ function downloadImg(elLink) {
 }
 
 function openColorPicker() {
-  const colorInput = getEl('.color-picker')
-  colorInput.click()
+  getEl('.color-picker').click()
 }
 
 function onColorChange({ value }) {
@@ -441,8 +396,8 @@ function onAlign(allignment) {
   renderMeme()
 }
 
-function onChangeFont({ value }) {
-  setLineFont(value)
+function onChangeFont({ target }) {
+  setLineFont(target.value)
   renderMeme()
 }
 
@@ -450,7 +405,6 @@ function onUnderline() {
   const selectedLine = getSelectedLine()
   if (selectedLine) {
     selectedLine.underline = !selectedLine.underline
-    renderMeme()
   }
   renderMeme()
 }
@@ -464,23 +418,21 @@ function onLineClick({ offsetX, offsetY }) {
 
   let clickedLineIdx = -1
 
-  meme.lines.forEach((line, i) => {
-    let textWidth = gCtx.measureText(line.txt).width
-    if (i === 0) textWidth *= 3
-    const textHeight = line.size
+  meme.lines.forEach(({ size: textHeight, sticker, url, x, y, txt }, idx) => {
+    const textWidth = gCtx.measureText(txt).width
 
-    if (line.sticker) {
+    if (sticker) {
       const stickerImg = new Image()
-      stickerImg.src = line.url
+      stickerImg.src = url
 
       stickerImg.onload = () => {
         if (
-          offsetX >= line.x &&
-          offsetX <= line.x + stickerImg.width &&
-          offsetY >= line.y &&
-          offsetY <= line.y + stickerImg.height
+          offsetX >= x &&
+          offsetX <= x + stickerImg.width &&
+          offsetY >= y &&
+          offsetY <= y + stickerImg.height
         ) {
-          clickedLineIdx = i
+          clickedLineIdx = idx
           if (clickedLineIdx !== -1) {
             meme.selectedLineIdx = clickedLineIdx
             renderMeme()
@@ -489,12 +441,12 @@ function onLineClick({ offsetX, offsetY }) {
       }
     } else {
       if (
-        offsetX >= line.x - textWidth / 2 &&
-        offsetX <= line.x + textWidth / 2 &&
-        offsetY >= line.y - textHeight / 2 &&
-        offsetY <= line.y + textHeight / 2
+        offsetX >= x - textWidth / 2 &&
+        offsetX <= x + textWidth / 2 &&
+        offsetY >= y - textHeight / 2 &&
+        offsetY <= y + textHeight / 2
       ) {
-        clickedLineIdx = i
+        clickedLineIdx = idx
         if (clickedLineIdx !== -1) {
           meme.selectedLineIdx = clickedLineIdx
           renderMeme()
@@ -506,50 +458,4 @@ function onLineClick({ offsetX, offsetY }) {
 
 function onSaveMeme() {
   saveMemeToStorage()
-}
-
-function onShareFacebook() {
-  const imgDataUrl = gElCanvas.toDataURL('image/jpeg')
-
-  function onSuccess(uploadedImgUrl) {
-    const url = encodeURIComponent(uploadedImgUrl)
-    window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}&t=${url}`)
-  }
-
-  doUploadImg(imgDataUrl, onSuccess)
-}
-
-function onShareTwitter() {
-  const imgDataUrl = gElCanvas.toDataURL('image/jpeg')
-
-  function onSuccess(uploadedImgUrl) {
-    const url = encodeURIComponent(uploadedImgUrl)
-    window.open(`https://twitter.com/intent/tweet?url=${url}`)
-  }
-
-  doUploadImg(imgDataUrl, onSuccess)
-}
-
-function doUploadImg(imgDataUrl, onSuccess) {
-  const formData = new FormData()
-  formData.append('img', imgDataUrl)
-
-  const XHR = new XMLHttpRequest()
-  XHR.onreadystatechange = () => {
-    if (XHR.readyState !== XMLHttpRequest.DONE) return
-    if (XHR.status !== 200) return console.error('Error uploading image')
-    const { responseText: url } = XHR
-
-    onSuccess(url)
-  }
-  XHR.onerror = (req, ev) => {
-    console.error(
-      'Error connecting to server with request:',
-      req,
-      '\nGot response data:',
-      ev
-    )
-  }
-  XHR.open('POST', '//ca-upload.com/here/upload.php')
-  XHR.send(formData)
 }

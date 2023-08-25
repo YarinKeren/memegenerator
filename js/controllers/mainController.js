@@ -19,26 +19,35 @@ function addNavListener() {
 }
 
 function moveToGallery() {
-  getEl('.gallery').classList.remove('hidden')
-  getEl('.editor').classList.add('hidden')
-  getEl('.saved-memes').classList.add('hidden')
+  removeClass('hidden', '.gallery')
+  addClass('hidden', '.editor')
+  addClass('hidden', '.saved-memes')
+}
+
+function moveToEditor() {
+  addClass('hidden', '.gallery')
+  addClass('hidden', '.saved-memes')
+  removeClass('hidden', '.editor')
+  removeClass('active', '.gallery-link')
 }
 
 function moveToSaved() {
-  getEl('.gallery').classList.add('hidden')
-  getEl('.editor').classList.add('hidden')
-  getEl('.saved-memes').classList.remove('hidden')
+  addClass('hidden', '.gallery')
+  addClass('hidden', '.editor')
+  removeClass('hidden', '.saved-memes')
   renderSavedMemes()
 }
 
 function onToggleLanguage(elBtn) {
-  const lang = elBtn.innerText
-  if (lang === 'Heb') {
+  const lang = elBtn.innerHTML.trim()
+  const isr = '<img src="styles/img/israel.png">'
+  const usa = '<img src="styles/img/usa.png">'
+  if (lang === isr) {
     onSetLang('he')
-    elBtn.innerText = 'Eng'
+    elBtn.innerHTML = usa
   } else {
     onSetLang('en')
-    elBtn.innerText = 'Heb'
+    elBtn.innerHTML = isr
   }
 }
 
@@ -46,11 +55,9 @@ function onSetLang(lang) {
   setLang(lang)
   changeBodyDirection(lang)
   doTrans()
-  // renderBooks()
-  // renderCards()
 }
 
 function changeBodyDirection(lang) {
-  if (lang === 'he') document.body.classList.add('rtl')
-  else document.body.classList.remove('rtl')
+  if (lang === 'he') addClass('rtl', 'body')
+  else removeClass('rtl', 'body')
 }

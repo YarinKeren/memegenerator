@@ -18,6 +18,10 @@ function getMeme() {
   return gMeme
 }
 
+function getLines() {
+  return gMeme.lines
+}
+
 function getStickers() {
   return gStickers
 }
@@ -26,8 +30,20 @@ function setImgs(imgs) {
   gImgs = imgs
 }
 
+function getLineByIdx(idx) {
+  return gMeme.lines[idx]
+}
+
 function getSelectedLine() {
   return gMeme.lines[gMeme.selectedLineIdx]
+}
+
+function getSelectedLineIdx() {
+  return gMeme.selectedLineIdx
+}
+
+function getSelectedSticker(idx) {
+  return gStickers[idx]
 }
 
 function getImgUrlByIdx(imgIdx) {
@@ -39,10 +55,10 @@ function getImgByIdx(idx) {
   return gImgs.find((img, id) => idx === id)
 }
 
-function setLineTxt(text) {
+function setLineTxt(newText) {
   const line = getSelectedLine()
-  if (line) line.txt = text
-  else gMeme.lines[0].txt += text
+  if (line) line.txt = newText
+  else gMeme.lines[0].txt += newText
 }
 
 function setTextColor(color) {
@@ -51,6 +67,7 @@ function setTextColor(color) {
 }
 
 function setFontSize(diff) {
+  const line = getSelectedLine()
   line.size += diff
 }
 
@@ -60,7 +77,7 @@ function setLineFont(font) {
 }
 
 function _getImgIdx(imgId) {
-  return gImgs.findIndex((img) => img.id === imgId)
+  return gImgs.findIndex(img => img.id === imgId)
 }
 
 function setSavedImg(imagePath, meme) {
@@ -121,16 +138,25 @@ function addLine() {
   else gMeme.selectedLineIdx++
 }
 
+function addStickerLine(newStickerLine) {
+  gMeme.lines.push(newStickerLine)
+}
+
 function switchLineIdx() {
-  if (gMeme.selectedLineIdx == gMeme.lines.length - 1) gMeme.selectedLineIdx = 0
+  if (gMeme.selectedLineIdx === gMeme.lines.length - 1)
+    gMeme.selectedLineIdx = 0
   else gMeme.selectedLineIdx++
+}
+
+function updateSelectedLine() {
+  gMeme.selectedLineIdx = gMeme.lines.length - 1
 }
 
 function deleteLine() {
   gMeme.lines = gMeme.lines.filter(
-    (line, index) => index !== gMeme.selectedLineIdx
+    (_, index) => index !== gMeme.selectedLineIdx
   )
-  gMeme.selectedLineIdx--
+  if (gMeme.selectedLineIdx !== 0) gMeme.selectedLineIdx--
 }
 
 function setAlignment(alignment) {

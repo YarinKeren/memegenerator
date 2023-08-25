@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title data-trans="title">Meme-Generator</title>
     <link rel="stylesheet" href="styles/styles.css" />
     <script
       src="https://kit.fontawesome.com/3c8dec827a.js"
@@ -29,10 +29,12 @@
         >
           Memes
         </li>
-        <li class="nav-item about-link" data-trans="about">About</li>
+        <li class="nav-item about-link" data-trans="about">
+          <a href="http://www.yarinkeren.com" target="_blank">About</a>
+        </li>
         <li class="language-toggle">
           <button class="btn btn-language" onclick="onToggleLanguage(this)">
-            Heb
+            <img src="styles/img/israel.png" />
           </button>
         </li>
       </nav>
@@ -46,10 +48,12 @@
           <form class="form">
             <input
               type="search"
-              placeholder="Search"
+              placeholder="Search.."
               class="search-field"
               list="keywordsList"
+              name="filter"
               title="Filter"
+              data-trans="search"
               oninput="onSetFilterBy(this)"
             />
             <datalist id="keywordsList" class="keywordsList"></datalist>
@@ -62,8 +66,9 @@
           </form>
           <button
             class="btn btn-flexible"
-            onclick="onFlexible()"
             title="Randomize a meme !"
+            data-trans="flexible-btn"
+            onclick="onFlexible()"
           >
             Im Flexible
           </button>
@@ -103,6 +108,7 @@
               type="text"
               class="text-input"
               placeholder="Enter text"
+              name="text-input"
               oninput="onTextChange(event.target)"
             />
             <div class="top-buttons">
@@ -163,33 +169,33 @@
                       class="fa-solid fa-cloud-arrow-up"
                       style="color: #000000"
                     ></i>
-                    Save
+                    <span data-trans="editor-save-btn">Save</span>
                   </button>
                   <button class="btn btn-facebook" onclick="onShareFacebook()">
                     <i
                       class="fa-brands fa-square-facebook"
                       style="color: #000000"
                     ></i>
-                    Facebook
+                    <span data-trans="editor-facebook-btn">Facebook</span>
                   </button>
                   <button class="btn btn-facebook" onclick="onShareTwitter()">
                     <i
                       class="fa-brands fa-x-twitter"
                       style="color: #000000"
                     ></i>
-                    (Twitter)
+                    <span data-trans="editor-twitter-btn">(Twitter)</span>
                   </button>
                 </span>
                 <button class="btn btn-share" onclick="toggleShareMenu()">
-                  <i class="fa-solid fa-share-nodes" style="color: #000000"></i>
-                  Share
+                  <i class="fa-solid fa-share-nodes" style="color: #fff"></i>
+                  <span data-trans="editor-share-btn">Share</span>
                 </button>
               </div>
 
               <a href="#" onclick="downloadImg(this)" download="my-img.jpg">
                 <button class="btn btn-download">
-                  <i class="fa-solid fa-download" style="color: #ffffff"></i>
-                  Download
+                  <i class="fa-solid fa-download" style="color: #fff"></i>
+                  <span data-trans="editor-download-btn">Download</span>
                 </button>
               </a>
             </div>
@@ -203,6 +209,7 @@
     <script src="js/services/utilService.js"></script>
     <script src="js/services/galleryService.js"></script>
     <script src="js/services/memeService.js"></script>
+    <script src="js/services/shareService.js"></script>
     <script src="js/controllers/savedController.js"></script>
     <script src="js/controllers/mainController.js"></script>
     <script src="js/controllers/memeController.js"></script>

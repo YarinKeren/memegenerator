@@ -1,6 +1,10 @@
 'use strict'
 
 const gTrans = {
+  title: {
+    en: 'Meme-Generator',
+    he: 'מחולל פירושונים',
+  },
   logo: {
     en: 'Meme-GeneratØr',
     he: 'מחולל פירושונים',
@@ -21,37 +25,57 @@ const gTrans = {
     en: 'Price',
     he: 'מחיר',
   },
-  'expensive-books': {
-    en: 'Expensive',
-    he: 'יקר',
+  search: {
+    en: 'Search..',
+    he: 'חיפוש..',
   },
-  'moderate-books': {
-    en: 'Moderate',
-    he: 'סביר',
+  'flexible-btn': {
+    en: "I'm Flexible",
+    he: 'אני גמיש !',
   },
-  'cheap-books': {
-    en: 'Cheap',
-    he: 'זול',
+  'editor-share-btn': {
+    en: 'Share',
+    he: 'שתף',
   },
-  'book-id': {
-    en: 'ID',
-    he: 'מק"ט',
+  'editor-download-btn': {
+    en: 'Download',
+    he: 'הורדה',
   },
-  'book-title': {
-    en: 'Title',
-    he: 'כותרת',
+  'editor-save-btn': {
+    en: 'Save',
+    he: 'שמור',
   },
-  'book-price': {
-    en: 'Price',
-    he: 'מחיר',
+  'editor-facebook-btn': {
+    en: 'Facebook',
+    he: 'פייסבוק',
   },
-  'book-actions': {
-    en: 'Actions',
-    he: 'פעולות',
+  'editor-twitter-btn': {
+    en: '(Twitter)',
+    he: '(טוויטר)',
   },
-  'filter-placeholder': {
-    en: 'Search...',
-    he: 'חפש...',
+  puppy: {
+    en: 'Puppy',
+    he: 'כלבלב',
+  },
+  baby: {
+    en: 'Baby',
+    he: 'תינוק',
+  },
+  idiot: {
+    en: 'idiot',
+    he: 'טמבל',
+  },
+  laugh: {
+    en: 'Laugh',
+    he: 'צוחק',
+  },
+  dictator: {
+    en: 'Dictator',
+    he: 'דיקטטור',
+  },
+  black: {
+    en: 'Black',
+    he: 'כהה עור',
   },
 }
 

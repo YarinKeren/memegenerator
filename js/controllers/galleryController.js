@@ -1,32 +1,31 @@
 'use strict'
 
 function renderGallery() {
-  const elGallery = getEl('.gallery-body')
   const imgs = getImgs()
   let galleryHTML = ''
 
   imgs.forEach((img, idx) => {
     galleryHTML += `<img src="${img.url}"
-                      onclick="onImgSelect(this, '${img.url}')"
-                      data-keywords="${img.keywords}"
-                      data-idx="${idx + 1}"
-                    >`
+    onclick="onImgSelect(this, '${img.url}')"
+    data-keywords="${img.keywords}"
+    data-idx="${idx + 1}"
+    >`
   })
 
-  elGallery.innerHTML = galleryHTML
-
+  setElHtml('.gallery-body', galleryHTML)
   setImgs(imgs)
-  renderKeywordsDataList()
+  renderFilterDataList()
 }
 
 function onImgSelect(elImg, imgUrl) {
   setImg(elImg, imgUrl)
+  moveToEditor()
   onMemeInit()
 }
 
-function renderKeywordsDataList() {
+function renderFilterDataList() {
   const uniqueKeywords = gImgsGallery.reduce((keywords, img) => {
-    img.keywords.forEach((keyword) => {
+    img.keywords.forEach(keyword => {
       if (!keywords.includes(keyword)) {
         keywords.push(keyword)
       }
@@ -34,14 +33,16 @@ function renderKeywordsDataList() {
     return keywords
   }, [])
 
-  const elKeywordsList = getEl('.keywordsList')
-  elKeywordsList.innerHTML = uniqueKeywords
-    .map((keyword) => `<option value="${keyword}"></option>`)
+  const strHtml = uniqueKeywords
+    .map(keyword => `<option value="${keyword}"></option>`)
     .join('')
+
+  setElHtml('.keywordsList', strHtml)
 }
 
 function onFlexible() {
   setImg(getRandomInt(1, 19))
+  moveToEditor()
   onMemeInit()
 }
 
@@ -52,19 +53,22 @@ function onSetFilterBy({ value }, key) {
 }
 
 function renderKeywordsSearch() {
-  const elSearchContainer = getEl('.search-words')
   const searchMap = getSearchCountMap()
   let strHtml = ''
 
   for (const key in searchMap) {
     const value = searchMap[key]
-    strHtml += `<span style="font-size: ${value}px"
-                  onclick="onSetFilterBy(this, '${key.toLowerCase()}');
-                  increaseFont(this)">${key}
-                </span>`
+    strHtml += `<span
+                  style="font-size: ${value}px"
+                  data-trans="${key.toLowerCase()}"
+                  onclick="
+                  onSetFilterBy(this, '${key.toLowerCase()}');
+                  increaseFont(this)">
+                  ${key}
+                  </span>`
   }
 
-  elSearchContainer.innerHTML = strHtml
+  setElHtml('.search-words', strHtml)
 }
 
 function increaseFont(elSpan) {
