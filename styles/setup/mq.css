@@ -13,6 +13,7 @@
 
   .main-layout {
     max-height: 100vh;
+    width: 70%;
     display: grid;
     grid-template-rows: 1fr 8fr;
 
@@ -22,30 +23,39 @@
   .main-layout .gallery {
     grid-row: 2/6;
   }
+
+  .gallery {
+    width: 100vw;
+    height: 100vh;
+  }
   .gallery-body {
     grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-    width: 90%;
+    width: 100%;
   }
   .gallery img {
     border-radius: 30px;
     width: 120px;
   }
-
   .gallery-header {
-    gap: 10px;
-    width: 90%;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
   }
-
   .gallery .search-field {
     margin-left: 0px;
     margin-right: 20px;
-    padding: 0px 5px;
+    padding: 10px 5px;
     font-size: 0.6em;
   }
   .gallery .search-button {
     margin-left: -70px;
     margin-right: 20px;
   }
+  .gallery .search-words {
+    order: -1;
+    padding: 5px;
+  }
+
   .controls {
     margin-right: 0px;
   }
@@ -55,19 +65,31 @@
   .controls .stickers img {
     width: 20%;
   }
+
   .navbar {
-    width: 90%;
+    display: grid;
+    grid-template-rows: repeat(2, 1fr);
+    grid-template-columns: repeat(4, 1fr);
+    place-items: center;
+    width: 100vw;
   }
   .navbar .logo {
-    margin-right: 70px;
+    grid-row: 1;
+    grid-column: 1/5;
+    margin-right: 0px;
   }
   .navbar .about-link {
+    grid-row: 2;
     place-self: center;
   }
   .navbar .gallery-link {
-    place-self: center;
+    grid-row: 2;
   }
   .navbar .memes-link {
+    grid-row: 2;
+  }
+  .navbar .language-toggle {
+    grid-row: 2;
     place-self: center;
   }
 }
