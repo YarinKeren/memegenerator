@@ -2,6 +2,7 @@
 
 function renderSavedMemes() {
   const savedMemes = getSavedMemes()
+  console.log(savedMemes)
   let galleryHTML = ''
 
   savedMemes.forEach((meme, index) => {

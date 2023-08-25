@@ -1,5 +1,5 @@
 .saved-memes-body {
-  background-color: #383b42;
+  background-color: var(--bgPrimary);
   padding-block-start: 20px;
   border-radius: 20px;
   padding: 10px;

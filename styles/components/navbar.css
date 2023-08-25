@@ -7,24 +7,19 @@
   margin-block-end: 10px;
 
   width: 100%;
-  background: rgb(15, 155, 179);
-  background: linear-gradient(
-    90deg,
-    rgba(15, 155, 179, 1) 0%,
-    rgba(33, 172, 145, 1) 57%,
-    rgba(48, 187, 115, 1) 100%
-  );
+  background: var(--gradientBackground-2);
+  background: var(--gradientPrimary);
   list-style-type: none;
 
   border-radius: 30px;
   padding: 10px;
-  color: aliceblue;
+  color: var(--lightThemeColor);
 }
 
 .nav-item:not(.logo):hover {
   cursor: pointer;
-  color: rgba(48, 187, 115, 1);
-  background-color: aliceblue;
+  color: var(--gradientBackground);
+  background-color: var(--lightThemeColor);
   padding: 0px 10px;
   border-radius: 12px;
 }
@@ -60,14 +55,13 @@
   border-radius: 12px;
   color: black;
   border: none;
-  box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px,
-    rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+  box-shadow: var(--boxShadowPrimary);
 }
 
 .active {
   cursor: pointer;
-  color: rgba(48, 187, 115, 1);
-  background-color: aliceblue;
+  color: var(--gradientBackground);
+  background-color: var(--lightThemeColor);
   padding: 0px 10px;
   border-radius: 12px;
 }

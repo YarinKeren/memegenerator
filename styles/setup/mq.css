@@ -1,14 +1,11 @@
 @media (max-width: 400px) {
   body {
-    background-color: #22252c;
+    background-color: var(--bgPrimary-2);
   }
   .editor-layout {
     grid-template-columns: 1fr;
     grid-template-rows: 1fr 2fr;
     height: 100vh;
-  }
-  .canvas-container {
-    place-self: start;
   }
 
   .main-layout {

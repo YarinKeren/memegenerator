@@ -4,7 +4,7 @@
   display: grid;
   grid-template-rows: 1fr 8fr 2fr 2fr 2fr 2fr;
 
-  background-color: #22252c;
+  background-color: var(--bgPrimary-2);
   padding: 20px;
 }
 
@@ -15,7 +15,7 @@
 /* EDITOR LAYOUT */
 .editor-layout {
   height: 70vh;
-  background-color: #383b42;
+  background-color: var(--bgPrimary);
   border-radius: 20px;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -27,7 +27,7 @@
 
 /* GALLERY LAYOUT */
 .gallery {
-  background-color: #383b42;
+  background-color: var(--bgPrimary);
   padding-block-start: 20px;
   border-radius: 20px;
   padding: 10px;

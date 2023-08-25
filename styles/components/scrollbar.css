@@ -7,28 +7,18 @@
 /* Track */
 ::-webkit-scrollbar-track {
   border-radius: 10px;
-  background-color: #22252c;
+  background-color: var(--bgPrimary-2);
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: rgb(15, 155, 179);
-  background: linear-gradient(
-    90deg,
-    rgba(15, 155, 179, 1) 0%,
-    rgba(33, 172, 145, 1) 57%,
-    rgba(48, 187, 115, 1) 100%
-  );
+  background: var(--gradientBackground-2);
+  background: var(--gradientPrimary);
   border-radius: 12px;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: rgb(15, 155, 179);
-  background: linear-gradient(
-    90deg,
-    rgba(15, 155, 179, 1) 0%,
-    rgba(33, 172, 145, 1) 57%,
-    rgba(48, 187, 115, 1) 100%
-  );
+  background: var(--gradientBackground-2);
+  background: var(--gradientPrimary);
 }

@@ -6,10 +6,9 @@
   cursor: pointer;
   padding: 10px;
   border-radius: 12px;
-  color: aliceblue;
+  color: var(--lightThemeColor);
   border: none;
-  box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px,
-    rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+  box-shadow: var(--boxShadowPrimary);
 }
 .gallery-header .btn-flexible {
   background-color: rgb(111, 168, 232);
@@ -27,7 +26,7 @@
   justify-content: space-around;
   border-radius: 30px;
   padding: 10px;
-  color: aliceblue;
+  color: var(--lightThemeColor);
   background-color: #87898d;
 }
 .gallery .search-words span {
@@ -41,10 +40,10 @@
   flex-direction: row;
 }
 .gallery .search-field {
-  color: aliceblue;
+  color: var(--lightThemeColor);
   margin-inline-start: 20px;
   padding: 10px 35px 10px 15px;
-  background-color: #22252c;
+  background-color: var(--bgPrimary-2);
   border: none;
   border-radius: 100px;
   outline: none;

@@ -30,10 +30,6 @@ function setImgs(imgs) {
   gImgs = imgs
 }
 
-function getLineByIdx(idx) {
-  return gMeme.lines[idx]
-}
-
 function getSelectedLine() {
   return gMeme.lines[gMeme.selectedLineIdx]
 }

@@ -116,7 +116,6 @@ function handleCanvasInteractionMove(ev) {
 function handleInteractionMove(moveX, moveY) {
   if (gDraggingLineIdx === -1) return
 
-  // const line = getLineByIdx(gDraggingLineIdx)
   const line = getSelectedLine()
   const { boundingBox, align } = line
 
@@ -142,7 +141,7 @@ function handleCanvasInteractionEnd() {
   )
 
   if (gDraggingLineIdx !== -1) {
-    const line = getLineByIdx(gDraggingLineIdx)
+    const line = getSelectedLine()
     if (line && line.prevAlign) {
       line.align = line.prevAlign
       delete line.prevAlign
@@ -170,51 +169,6 @@ function onLineClick({ offsetX, offsetY }) {
     renderMeme()
   }
 }
-
-// function onLineClick({ offsetX, offsetY }) {
-//   const meme = getMeme()
-
-//   let clickedLineIdx = -1
-
-//   meme.lines.forEach((line, i) => {
-//     let textWidth = gCtx.measureText(line.txt).width
-//     if (i === 0) textWidth *= 3
-//     const textHeight = line.size
-
-//     if (line.sticker) {
-//       const stickerImg = new Image()
-//       stickerImg.src = line.url
-
-//       stickerImg.onload = () => {
-//         if (
-//           offsetX >= line.x &&
-//           offsetX <= line.x + stickerImg.width &&
-//           offsetY >= line.y &&
-//           offsetY <= line.y + stickerImg.height
-//         ) {
-//           clickedLineIdx = i
-//           if (clickedLineIdx !== -1) {
-//             meme.selectedLineIdx = clickedLineIdx
-//             renderMeme()
-//           }
-//         }
-//       }
-//     } else {
-//       if (
-//         offsetX >= line.x - textWidth / 2 &&
-//         offsetX <= line.x + textWidth / 2 &&
-//         offsetY >= line.y - textHeight / 2 &&
-//         offsetY <= line.y + textHeight / 2
-//       ) {
-//         clickedLineIdx = i
-//         if (clickedLineIdx !== -1) {
-//           meme.selectedLineIdx = clickedLineIdx
-//           renderMeme()
-//         }
-//       }
-//     }
-//   })
-// }
 
 function renderMeme() {
   const meme = getMeme()
@@ -292,6 +246,7 @@ function resizeCanvas() {
   const { offsetWidth, offsetHeight } = getEl('.canvas-container')
   gElCanvas.width = offsetWidth
   gElCanvas.height = offsetHeight
+  console.log('gElCanvas', gElCanvas)
   renderMeme()
 }
 
