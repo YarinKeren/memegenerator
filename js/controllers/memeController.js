@@ -27,6 +27,7 @@ function addListeners() {
 
 function addCanvasEventListeners() {
   gElCanvas.addEventListener('click', onLineClick)
+  gElCanvas.addEventListener('touchend', onLineClick)
   gElCanvas.addEventListener('mousedown', handleCanvasInteractionStart)
   gElCanvas.addEventListener('touchstart', handleCanvasInteractionStart)
 }
@@ -117,6 +118,7 @@ function handleInteractionMove(moveX, moveY) {
 }
 
 function handleCanvasInteractionEnd() {
+  gDraggingActive = false
   gElCanvas.removeEventListener(
     gIsTouchActive ? 'touchmove' : 'mousemove',
     handleCanvasInteractionMove
@@ -146,22 +148,34 @@ function handleArrowMove(event) {
   }
 }
 
-function onLineClick({ offsetX, offsetY }) {
+function onLineClick(ev) {
   const meme = getMeme()
-  const clickedLineIdx = findLineAtPosition(offsetX, offsetY)
+  let x, y
+
+  if (ev.type === 'click') {
+    x = ev.offsetX
+    y = ev.offsetY
+  } else if (ev.type === 'touchend') {
+    const { clientX, clientY, target } = ev.changedTouches[0]
+    x = clientX - target.getBoundingClientRect().left
+    y = clientY - target.getBoundingClientRect().top
+  }
+
+  const clickedLineIdx = findLineAtPosition(x, y)
 
   if (clickedLineIdx !== -1) {
-    meme.selectedLineIdx = clickedLineIdx
+    setSelectedLineIdx(clickedLineIdx)
     renderMeme()
   }
 }
 
 function renderMeme() {
   const meme = getMeme()
+  const selectedLine = getSelectedLine()
   const elImg = new Image()
 
   elImg.src = meme.url || getImgUrlByIdx(meme.selectedImgIdx)
-  meme.url = elImg.src
+  setMemeUrl(elImg.src)
 
   elImg.onload = () => {
     coverCanvasWithImg(elImg)
@@ -176,8 +190,8 @@ function renderMeme() {
   }
 
   const elTextInput = getEl('.text-input')
-  if (meme.lines.length && meme.lines[meme.selectedLineIdx]) {
-    elTextInput.value = meme.lines[meme.selectedLineIdx].txt || ''
+  if (meme.lines.length && selectedLine) {
+    elTextInput.value = selectedLine.txt || ''
   }
 }
 
@@ -383,49 +397,6 @@ function onUnderline() {
 
 function toggleShareMenu() {
   getEl('.tooltip').classList.toggle('show-tooltip')
-}
-
-function onLineClick({ offsetX, offsetY }) {
-  const meme = getMeme()
-
-  let clickedLineIdx = -1
-
-  meme.lines.forEach(({ size: textHeight, sticker, url, x, y, txt }, idx) => {
-    const textWidth = gCtx.measureText(txt).width
-
-    if (sticker) {
-      const stickerImg = new Image()
-      stickerImg.src = url
-
-      stickerImg.onload = () => {
-        if (
-          offsetX >= x &&
-          offsetX <= x + stickerImg.width &&
-          offsetY >= y &&
-          offsetY <= y + stickerImg.height
-        ) {
-          clickedLineIdx = idx
-          if (clickedLineIdx !== -1) {
-            meme.selectedLineIdx = clickedLineIdx
-            renderMeme()
-          }
-        }
-      }
-    } else {
-      if (
-        offsetX >= x - textWidth / 2 &&
-        offsetX <= x + textWidth / 2 &&
-        offsetY >= y - textHeight / 2 &&
-        offsetY <= y + textHeight / 2
-      ) {
-        clickedLineIdx = idx
-        if (clickedLineIdx !== -1) {
-          meme.selectedLineIdx = clickedLineIdx
-          renderMeme()
-        }
-      }
-    }
-  })
 }
 
 function onSaveMeme() {

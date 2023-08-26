@@ -26,16 +26,8 @@ function getStickers() {
   return gStickers
 }
 
-function setImgs(imgs) {
-  gImgs = imgs
-}
-
 function getSelectedLine() {
   return gMeme.lines[gMeme.selectedLineIdx]
-}
-
-function getSelectedLineIdx() {
-  return gMeme.selectedLineIdx
 }
 
 function getSelectedSticker(idx) {
@@ -47,8 +39,42 @@ function getImgUrlByIdx(imgIdx) {
   else return `meme-imgs/meme-imgs/${getRandomInt(1, 19)}.jpg`
 }
 
-function getImgByIdx(idx) {
-  return gImgs.find((img, id) => idx === id)
+function _getImgIdx(imgId) {
+  return gImgs.findIndex(img => img.id === imgId)
+}
+
+function _initMeme(imgUrl, imgIdx) {
+  return {
+    url: imgUrl,
+    selectedImgIdx: imgIdx,
+    selectedLineIdx: 0,
+    lines: [
+      {
+        txt: 'No VARS Allowed !',
+        size: 30,
+        color: 'white',
+        align: 'center',
+        font: 'Impact',
+        underline: false,
+      },
+      {
+        txt: 'But CSS have only VAR !',
+        size: 30,
+        color: 'white',
+        align: 'center',
+        font: 'Impact',
+        underline: false,
+      },
+    ],
+  }
+}
+
+function setImgs(imgs) {
+  gImgs = imgs
+}
+
+function setSelectedLineIdx(idx) {
+  gMeme.selectedLineIdx = idx
 }
 
 function setLineTxt(newText) {
@@ -72,8 +98,13 @@ function setLineFont(font) {
   line.font = font
 }
 
-function _getImgIdx(imgId) {
-  return gImgs.findIndex(img => img.id === imgId)
+function setImg(elImg, imgUrl) {
+  let imgIdx
+  if (elImg.dataset) imgIdx = _getImgIdx(elImg.dataset.idx)
+  else imgIdx = elImg
+  if (imgIdx === -1) imgIdx = elImg.dataset.idx
+
+  gMeme = _initMeme(imgUrl, imgIdx)
 }
 
 function setSavedImg(meme) {
@@ -90,35 +121,13 @@ function setSavedImg(meme) {
   gMeme.selectedImgIdx = _getImgIdx(id)
 }
 
-function setImg(elImg, imgUrl) {
-  let imgIdx
-  if (elImg.dataset) imgIdx = _getImgIdx(elImg.dataset.idx)
-  else imgIdx = elImg
-  if (imgIdx === -1) imgIdx = elImg.dataset.idx
+function setAlignment(alignment) {
+  const line = getSelectedLine()
+  line.align = alignment
+}
 
-  gMeme = {
-    url: imgUrl,
-    selectedImgIdx: imgIdx,
-    selectedLineIdx: 0,
-    lines: [
-      {
-        txt: 'Canvas is shit',
-        size: 30,
-        color: 'white',
-        align: 'center',
-        font: 'Impact',
-        underline: false,
-      },
-      {
-        txt: 'I want a CR',
-        size: 30,
-        color: 'white',
-        align: 'center',
-        font: 'Impact',
-        underline: false,
-      },
-    ],
-  }
+function setMemeUrl(newUrl) {
+  gMeme.url = newUrl
 }
 
 function addLine() {
@@ -153,11 +162,6 @@ function deleteLine() {
     (_, index) => index !== gMeme.selectedLineIdx
   )
   if (gMeme.selectedLineIdx !== 0) gMeme.selectedLineIdx--
-}
-
-function setAlignment(alignment) {
-  const line = getSelectedLine()
-  line.align = alignment
 }
 
 function saveMemeToStorage(elCanvas) {
