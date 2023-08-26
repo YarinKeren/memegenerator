@@ -50,7 +50,7 @@ function _initMeme(imgUrl, imgIdx) {
     selectedLineIdx: 0,
     lines: [
       {
-        txt: 'No VARS Allowed !',
+        txt: 'Canvas JS',
         size: 30,
         color: 'white',
         align: 'center',
@@ -58,7 +58,7 @@ function _initMeme(imgUrl, imgIdx) {
         underline: false,
       },
       {
-        txt: 'But CSS have only VAR !',
+        txt: 'Why ?',
         size: 30,
         color: 'white',
         align: 'center',
@@ -85,17 +85,17 @@ function setLineTxt(newText) {
 
 function setTextColor(color) {
   const line = getSelectedLine()
-  line.color = color
+  line && (line.color = color)
 }
 
 function setFontSize(diff) {
   const line = getSelectedLine()
-  line.size += diff
+  line && (line.size += diff)
 }
 
 function setLineFont(font) {
   const line = getSelectedLine()
-  line.font = font
+  if (line) line.font = font
 }
 
 function setImg(elImg, imgUrl) {
@@ -123,11 +123,16 @@ function setSavedImg(meme) {
 
 function setAlignment(alignment) {
   const line = getSelectedLine()
-  line.align = alignment
+  if (line) line.align = alignment
 }
 
 function setMemeUrl(newUrl) {
   gMeme.url = newUrl
+}
+
+function setUnderline() {
+  const line = getSelectedLine()
+  line && (line.underline = !line.underline)
 }
 
 function addLine() {

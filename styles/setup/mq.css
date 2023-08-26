@@ -17,8 +17,8 @@
   }
   .main-layout .gallery {
     grid-row: 2/6;
+    color: rgb(227, 227, 227);
   }
-
   .gallery {
     width: 100vw;
     height: 100%;

@@ -18,14 +18,98 @@ function addListeners() {
   getEl('.font-dropdown').addEventListener('change', onChangeFont)
   document.addEventListener('keydown', handleArrowMove)
 
-  addCanvasEventListeners()
+  addCanvasListeners()
 }
 
-function addCanvasEventListeners() {
+function addCanvasListeners() {
   gElCanvas.addEventListener('click', onLineClick)
   gElCanvas.addEventListener('touchend', onLineClick)
-  gElCanvas.addEventListener('mousedown', handleCanvasInteractionStart)
-  gElCanvas.addEventListener('touchstart', handleCanvasInteractionStart)
+  gElCanvas.addEventListener('mousedown', onDragStart)
+  gElCanvas.addEventListener('touchstart', onDragStart)
+}
+
+function onDragStart(ev) {
+  ev.preventDefault()
+  const { type } = ev
+  const { x, y } = getEvPos(ev)
+  const { isActive, currLineIdx } = gDragDrop
+
+  gDragDrop.isActive = type === 'touchstart'
+  gDragDrop.isLineClicked = currLineIdx !== -1
+
+  gDragDrop.currLineIdx = searchLineAtPosition(x, y)
+  if (currLineIdx === -1) return
+  gDragDrop.isDrag = true
+
+  gDragDrop.startPos = { x, y }
+
+  gElCanvas.addEventListener(isActive ? 'touchmove' : 'mousemove', onDragMove)
+  document.addEventListener(isActive ? 'touchend' : 'mouseup', onDragEnd)
+}
+
+function onDragMove(ev) {
+  if (!gDragDrop.isDrag) return
+
+  const { x, y } = getEvPos(ev)
+  const { startPos } = gDragDrop
+  const dx = x - startPos.x
+  const dy = y - startPos.y
+
+  moveTo(dx, dy)
+  gDragDrop.startPos.x = x
+  gDragDrop.startPos.y = y
+
+  renderMeme()
+}
+
+function moveTo(moveX, moveY) {
+  if (gDragDrop.currLineIdx === -1) return
+
+  const line = getSelectedLine()
+  const { boundingBox, align } = line
+
+  if (line.sticker) {
+    boundingBox.x += moveX
+    boundingBox.y += moveY
+  } else {
+    line.prevAlign = align
+    line.align = 'left'
+    line.x += moveX
+    line.y += moveY
+    boundingBox.x += moveX
+    boundingBox.y += moveY
+  }
+}
+
+function onDragEnd() {
+  gDragDrop.isDrag = false
+  gElCanvas.removeEventListener(
+    gDragDrop.isActive ? 'touchmove' : 'mousemove',
+    onDragMove
+  )
+  document.removeEventListener(
+    gDragDrop.isActive ? 'touchend' : 'mouseup',
+    onDragEnd
+  )
+
+  if (gDragDrop.currLineIdx !== -1) {
+    const line = getSelectedLine()
+    if (line && line.prevAlign) {
+      line.align = line.prevAlign
+      line.prevAlign = null
+    }
+  }
+
+  gDragDrop.currLineIdx = -1
+}
+
+function searchLineAtPosition(x, y) {
+  const memeLines = getLines()
+
+  return memeLines.findIndex(line => {
+    const { x: bx, y: by, width, height } = line.boundingBox
+    return x >= bx && x <= bx + width && y >= by && y <= by + height
+  })
 }
 
 function getEvPos(ev) {
@@ -45,95 +129,6 @@ function getEvPos(ev) {
   return pos
 }
 
-function handleCanvasInteractionStart(ev) {
-  ev.preventDefault()
-  const { type } = ev
-  const { x, y } = getEvPos(ev)
-  const { isActive, currLineIdx } = gDragDrop
-
-  gDragDrop.isActive = type === 'touchstart'
-
-  gDragDrop.currLineIdx = findLineAtPosition(x, y)
-  if (currLineIdx === -1) return
-  gDragDrop.isDrag = true
-
-  gDragDrop.startPos = { x, y }
-
-  gElCanvas.addEventListener(
-    isActive ? 'touchmove' : 'mousemove',
-    handleCanvasInteractionMove
-  )
-  document.addEventListener(
-    isActive ? 'touchend' : 'mouseup',
-    handleCanvasInteractionEnd
-  )
-}
-
-function handleCanvasInteractionMove(ev) {
-  if (!gDragDrop.isDrag) return
-
-  const { x, y } = getEvPos(ev)
-  const { startPos } = gDragDrop
-  const dx = x - startPos.x
-  const dy = y - startPos.y
-
-  handleInteractionMove(dx, dy)
-  gDragDrop.startPos.x = x
-  gDragDrop.startPos.y = y
-
-  renderMeme()
-}
-
-function findLineAtPosition(x, y) {
-  const memeLines = getLines()
-
-  return memeLines.findIndex(line => {
-    const { x: bx, y: by, width, height } = line.boundingBox
-    return x >= bx && x <= bx + width && y >= by && y <= by + height
-  })
-}
-
-function handleInteractionMove(moveX, moveY) {
-  if (gDragDrop.currLineIdx === -1) return
-
-  const line = getSelectedLine()
-  const { boundingBox, align } = line
-
-  if (line.sticker) {
-    boundingBox.x += moveX
-    boundingBox.y += moveY
-  } else {
-    line.prevAlign = align
-    line.align = 'left'
-    line.x += moveX
-    line.y += moveY
-    boundingBox.x += moveX
-    boundingBox.y += moveY
-  }
-}
-
-function handleCanvasInteractionEnd() {
-  gDragDrop.isDrag = false
-  gElCanvas.removeEventListener(
-    gDragDrop.isActive ? 'touchmove' : 'mousemove',
-    handleCanvasInteractionMove
-  )
-  document.removeEventListener(
-    gDragDrop.isActive ? 'touchend' : 'mouseup',
-    handleCanvasInteractionEnd
-  )
-
-  if (gDragDrop.currLineIdx !== -1) {
-    const line = getSelectedLine()
-    if (line && line.prevAlign) {
-      line.align = line.prevAlign
-      delete line.prevAlign
-    }
-  }
-
-  gDragDrop.currLineIdx = -1
-}
-
 function handleArrowMove(event) {
   if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
     const moveDirection = event.key === 'ArrowUp' ? -1 : 1
@@ -143,28 +138,8 @@ function handleArrowMove(event) {
   }
 }
 
-function onLineClick(ev) {
-  const meme = getMeme()
-  let x, y
-
-  if (ev.type === 'click') {
-    x = ev.offsetX
-    y = ev.offsetY
-  } else if (ev.type === 'touchend') {
-    const { clientX, clientY, target } = ev.changedTouches[0]
-    x = clientX - target.getBoundingClientRect().left
-    y = clientY - target.getBoundingClientRect().top
-  }
-
-  const clickedLineIdx = findLineAtPosition(x, y)
-
-  if (clickedLineIdx !== -1) {
-    setSelectedLineIdx(clickedLineIdx)
-    renderMeme()
-  }
-}
-
 function renderMeme() {
+  gCtx.save()
   const meme = getMeme()
   const selectedLine = getSelectedLine()
   const elImg = new Image()
@@ -243,25 +218,6 @@ function renderStickers() {
   setElHtml('.stickers', stickersHtml)
 }
 
-function onAddSticker(stickerIdx) {
-  const sticker = getSelectedSticker(stickerIdx)
-
-  const newStickerLine = {
-    sticker: true,
-    url: sticker.url,
-    boundingBox: {
-      x: 150,
-      y: 150,
-      width: 50,
-      height: 50,
-    },
-  }
-
-  addStickerLine(newStickerLine)
-  updateSelectedLine()
-  renderMeme()
-}
-
 function coverCanvasWithImg(elImg) {
   const { naturalWidth, naturalHeight } = elImg
 
@@ -305,17 +261,15 @@ function drawSelectionBox({ x, align, y }, textWidth, textHeight, padding) {
   } else if (align === 'right') {
     x = gElCanvas.width / 2 - textWidth
   }
-  gCtx.beginPath()
-  gCtx.rect(
+
+  // Draw gray background with opacity
+  gCtx.fillStyle = 'rgba(227, 227, 227, 0.6)' // Gray color with 0.7 opacity
+  gCtx.fillRect(
     x - padding,
     y - textHeight + padding,
     textWidth + 2 * padding,
     textHeight + 2 * padding + 10
   )
-  gCtx.strokeStyle = 'red'
-  gCtx.lineWidth = 1
-  gCtx.stroke()
-  gCtx.strokeStyle = 'black'
 }
 
 function drawUnderline({ underline, txt, x, y }) {
@@ -335,13 +289,31 @@ function onTextChange({ value }) {
   renderMeme()
 }
 
-function downloadImg(elLink) {
-  const imgContent = gElCanvas.toDataURL('image/jpeg')
-  elLink.href = imgContent
-}
-
 function openColorPicker() {
   getEl('.color-picker').click()
+}
+
+function onLineClick(ev) {
+  let x, y
+
+  if (ev.type === 'click') {
+    x = ev.offsetX
+    y = ev.offsetY
+  } else if (ev.type === 'touchend') {
+    const { clientX, clientY, target } = ev.changedTouches[0]
+    x = clientX - target.getBoundingClientRect().left
+    y = clientY - target.getBoundingClientRect().top
+  }
+
+  const clickedLineIdx = searchLineAtPosition(x, y)
+
+  if (clickedLineIdx !== -1) {
+    setSelectedLineIdx(clickedLineIdx)
+  } else {
+    setSelectedLineIdx(-1)
+  }
+
+  renderMeme()
 }
 
 function onColorChange({ value }) {
@@ -383,10 +355,30 @@ function onChangeFont({ target }) {
 }
 
 function onUnderline() {
-  const selectedLine = getSelectedLine()
-  if (selectedLine) {
-    selectedLine.underline = !selectedLine.underline
+  setUnderline()
+  renderMeme()
+}
+
+function onSaveMeme() {
+  saveMemeToStorage(gElCanvas)
+}
+
+function onAddSticker(stickerIdx) {
+  const sticker = getSelectedSticker(stickerIdx)
+
+  const newStickerLine = {
+    sticker: true,
+    url: sticker.url,
+    boundingBox: {
+      x: 150,
+      y: 150,
+      width: 50,
+      height: 50,
+    },
   }
+
+  addStickerLine(newStickerLine)
+  updateSelectedLine()
   renderMeme()
 }
 
@@ -394,6 +386,7 @@ function toggleShareMenu() {
   getEl('.tooltip').classList.toggle('show-tooltip')
 }
 
-function onSaveMeme() {
-  saveMemeToStorage(gElCanvas)
+function downloadImg(elLink) {
+  const imgContent = gElCanvas.toDataURL('image/jpeg')
+  elLink.href = imgContent
 }
