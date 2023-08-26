@@ -2,11 +2,12 @@
 
 function renderSavedMemes() {
   const savedMemes = getSavedMemes()
-  console.log(savedMemes)
   let galleryHTML = ''
 
+  if (!savedMemes) return
+
   savedMemes.forEach((meme, index) => {
-    galleryHTML += `<img src="${meme.imgURL}"
+    galleryHTML += `<img src="${meme.fullData}"
     onclick="savedImgSelect(${index})">`
   })
 
@@ -17,7 +18,7 @@ function savedImgSelect(memeIndex) {
   const savedMemes = getSavedMemes()
   const selectedMeme = savedMemes[memeIndex]
 
-  setSavedImg(selectedMeme.imgURL, selectedMeme)
+  setSavedImg(selectedMeme)
   moveToEditor()
   onMemeInit()
 }

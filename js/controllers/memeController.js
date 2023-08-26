@@ -175,7 +175,7 @@ function renderMeme() {
   const elImg = new Image()
 
   elImg.src = meme.url || getImgUrlByIdx(meme.selectedImgIdx)
-  meme.imgURL = elImg.src
+  meme.url = elImg.src
 
   elImg.onload = () => {
     coverCanvasWithImg(elImg)
@@ -246,7 +246,6 @@ function resizeCanvas() {
   const { offsetWidth, offsetHeight } = getEl('.canvas-container')
   gElCanvas.width = offsetWidth
   gElCanvas.height = offsetHeight
-  console.log('gElCanvas', gElCanvas)
   renderMeme()
 }
 
@@ -412,5 +411,5 @@ function onLineClick({ offsetX, offsetY }) {
 }
 
 function onSaveMeme() {
-  saveMemeToStorage()
+  saveMemeToStorage(gElCanvas)
 }

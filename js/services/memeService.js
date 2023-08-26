@@ -76,12 +76,12 @@ function _getImgIdx(imgId) {
   return gImgs.findIndex(img => img.id === imgId)
 }
 
-function setSavedImg(imagePath, meme) {
+function setSavedImg(meme) {
   const id = makeId()
 
   gImgs.push({
     id: id,
-    url: imagePath,
+    url: meme.url,
     keywords: ['idiot', 'funny'],
   })
 
@@ -160,7 +160,8 @@ function setAlignment(alignment) {
   line.align = alignment
 }
 
-function saveMemeToStorage() {
+function saveMemeToStorage(elCanvas) {
+  gMeme.fullData = elCanvas.toDataURL('image/jpeg')
   let savedMemes = loadFromStorage(SAVED_MEMES)
   if (!savedMemes || !savedMemes.length) savedMemes = [gMeme]
   else savedMemes.push(gMeme)
