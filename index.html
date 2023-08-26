@@ -11,9 +11,9 @@
     ></script>
   </head>
   <body onload="onInit()">
-    <main class="main-layout">
+    <main class="main-layout grid">
       <!-- NAVBAR -->
-      <nav class="navbar">
+      <nav class="navbar grid">
         <li class="logo" data-trans="logo">Meme-GeneratØr</li>
         <li
           class="nav-item gallery-link active"
@@ -40,12 +40,12 @@
       </nav>
       <!-- SAVED MEMES -->
       <section class="saved-memes hidden">
-        <article class="saved-memes-body"></article>
+        <article class="saved-memes-body grid"></article>
       </section>
       <!-- GALLERY -->
       <section class="gallery">
-        <div class="gallery-header">
-          <form class="form">
+        <div class="gallery-header flex space-around">
+          <form class="form flex direction-row">
             <input
               type="search"
               placeholder="Search.."
@@ -92,18 +92,20 @@
           >
             <i class="fa-solid fa-upload fa-lg" style="color: #000000"></i>
           </button>
-          <span class="search-words"></span>
+          <span class="search-words flex space-around align-center"></span>
         </div>
-        <article class="gallery-body"></article>
+        <article class="gallery-body grid"></article>
       </section>
       <!-- EDITOR -->
-      <section class="editor hidden">
-        <div class="editor-layout">
+      <section class="editor grid hidden">
+        <div class="editor-layout grid">
           <div class="canvas-container">
             <canvas width="200" height="200"></canvas>
           </div>
 
-          <article class="controls flex space-around">
+          <article
+            class="controls flex space-around direction-column align-center"
+          >
             <input
               type="text"
               class="text-input"
@@ -163,7 +165,10 @@
 
             <div class="share-buttons">
               <div class="tooltip">
-                <span class="tooltip-text" onclick="toggleShareMenu()">
+                <span
+                  class="tooltip-text flex direction-column"
+                  onclick="toggleShareMenu()"
+                >
                   <button class="btn btn-save" onclick="onSaveMeme()">
                     <i
                       class="fa-solid fa-cloud-arrow-up"

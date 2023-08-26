@@ -1,11 +1,25 @@
-.hidden {
-  display: none;
-}
-
 .flex {
   display: flex;
 }
-
 .space-around {
   justify-content: space-around;
+}
+
+.direction-column {
+  flex-direction: column;
+}
+
+.direction-row {
+  flex-direction: row;
+}
+
+.align-center {
+  align-items: center;
+}
+.grid {
+  display: grid;
+}
+
+.hidden {
+  display: none;
 }

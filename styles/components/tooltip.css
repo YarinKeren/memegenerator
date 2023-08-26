@@ -5,8 +5,6 @@
 }
 
 .tooltip .tooltip-text {
-  display: flex;
-  flex-direction: column;
   justify-content: space-between;
   visibility: hidden;
   opacity: 0;

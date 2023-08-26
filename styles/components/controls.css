@@ -1,8 +1,6 @@
 .controls {
   place-self: center;
 
-  flex-direction: column;
-  align-items: center;
   background-color: var(--bgPrimary);
   border-radius: 30px;
   width: 80%;

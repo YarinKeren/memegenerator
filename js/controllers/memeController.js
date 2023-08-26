@@ -2,10 +2,7 @@
 
 let gElCanvas
 let gCtx
-let gDraggingLineIdx
-let gIsTouchActive = false
-let gStartPos
-let gDraggingActive = false
+const gDragDrop = {}
 
 function onMemeInit() {
   gElCanvas = getEl('canvas')
@@ -37,12 +34,9 @@ function getEvPos(ev) {
     y: ev.offsetY,
   }
 
-  if (gIsTouchActive) {
-    // Prevent triggering the mouse ev
+  if (gDragDrop.isActive) {
     ev.preventDefault()
-    // Gets the first touch point
     ev = ev.changedTouches[0]
-    // Calc the right pos according to the touch screen
     pos = {
       x: ev.pageX - ev.target.offsetLeft - ev.target.clientLeft,
       y: ev.pageY - ev.target.offsetTop - ev.target.clientTop,
@@ -55,35 +49,37 @@ function handleCanvasInteractionStart(ev) {
   ev.preventDefault()
   const { type } = ev
   const { x, y } = getEvPos(ev)
+  const { isActive, currLineIdx } = gDragDrop
 
-  gIsTouchActive = type === 'touchstart'
+  gDragDrop.isActive = type === 'touchstart'
 
-  gDraggingLineIdx = findLineAtPosition(x, y)
-  if (gDraggingLineIdx === -1) return
-  gDraggingActive = true
+  gDragDrop.currLineIdx = findLineAtPosition(x, y)
+  if (currLineIdx === -1) return
+  gDragDrop.isDrag = true
 
-  gStartPos = { x, y }
+  gDragDrop.startPos = { x, y }
 
   gElCanvas.addEventListener(
-    gIsTouchActive ? 'touchmove' : 'mousemove',
+    isActive ? 'touchmove' : 'mousemove',
     handleCanvasInteractionMove
   )
   document.addEventListener(
-    gIsTouchActive ? 'touchend' : 'mouseup',
+    isActive ? 'touchend' : 'mouseup',
     handleCanvasInteractionEnd
   )
 }
 
 function handleCanvasInteractionMove(ev) {
-  if (!gDraggingActive) return
+  if (!gDragDrop.isDrag) return
 
   const { x, y } = getEvPos(ev)
-  const dx = x - gStartPos.x
-  const dy = y - gStartPos.y
+  const { startPos } = gDragDrop
+  const dx = x - startPos.x
+  const dy = y - startPos.y
 
   handleInteractionMove(dx, dy)
-  gStartPos.x = x
-  gStartPos.y = y
+  gDragDrop.startPos.x = x
+  gDragDrop.startPos.y = y
 
   renderMeme()
 }
@@ -98,7 +94,7 @@ function findLineAtPosition(x, y) {
 }
 
 function handleInteractionMove(moveX, moveY) {
-  if (gDraggingLineIdx === -1) return
+  if (gDragDrop.currLineIdx === -1) return
 
   const line = getSelectedLine()
   const { boundingBox, align } = line
@@ -117,17 +113,17 @@ function handleInteractionMove(moveX, moveY) {
 }
 
 function handleCanvasInteractionEnd() {
-  gDraggingActive = false
+  gDragDrop.isDrag = false
   gElCanvas.removeEventListener(
-    gIsTouchActive ? 'touchmove' : 'mousemove',
+    gDragDrop.isActive ? 'touchmove' : 'mousemove',
     handleCanvasInteractionMove
   )
   document.removeEventListener(
-    gIsTouchActive ? 'touchend' : 'mouseup',
+    gDragDrop.isActive ? 'touchend' : 'mouseup',
     handleCanvasInteractionEnd
   )
 
-  if (gDraggingLineIdx !== -1) {
+  if (gDragDrop.currLineIdx !== -1) {
     const line = getSelectedLine()
     if (line && line.prevAlign) {
       line.align = line.prevAlign
@@ -135,7 +131,7 @@ function handleCanvasInteractionEnd() {
     }
   }
 
-  gDraggingLineIdx = -1
+  gDragDrop.currLineIdx = -1
 }
 
 function handleArrowMove(event) {

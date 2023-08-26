@@ -5,9 +5,15 @@
   padding: 10px;
   height: 70vh;
   overflow-y: scroll;
-  display: grid;
+
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   place-items: center;
   gap: 15px;
   padding: 10px;
+}
+
+.saved-memes img {
+  border-radius: 30px;
+  width: 200px;
+  box-shadow: var(--imgBoxShadow);
 }
