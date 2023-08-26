@@ -5,6 +5,8 @@ let gCtx
 let gDraggingLineIdx
 
 let gIsTouchActive = false
+let gStartPos
+let gDraggingActive = false
 
 function onMemeInit() {
   gElCanvas = getEl('canvas')
@@ -13,38 +15,6 @@ function onMemeInit() {
   renderMeme()
   renderStickers()
   resizeCanvas()
-}
-
-function renderStickers() {
-  const stickers = getStickers()
-
-  const stickersHtml = stickers
-    .map(
-      (sticker, idx) =>
-        `<img src="${sticker.url}" alt="" onclick="onAddSticker(${idx})">`
-    )
-    .join('')
-
-  setElHtml('.stickers', stickersHtml)
-}
-
-function onAddSticker(stickerIdx) {
-  const sticker = getSelectedSticker(stickerIdx)
-
-  const newStickerLine = {
-    sticker: true,
-    url: sticker.url,
-    boundingBox: {
-      x: 150,
-      y: 150,
-      width: 50,
-      height: 50,
-    },
-  }
-
-  addStickerLine(newStickerLine)
-  updateSelectedLine()
-  renderMeme()
 }
 
 function addListeners() {
@@ -61,20 +31,38 @@ function addCanvasEventListeners() {
   gElCanvas.addEventListener('touchstart', handleCanvasInteractionStart)
 }
 
+function getEvPos(ev) {
+  let pos = {
+    x: ev.offsetX,
+    y: ev.offsetY,
+  }
+
+  if (gIsTouchActive) {
+    // Prevent triggering the mouse ev
+    ev.preventDefault()
+    // Gets the first touch point
+    ev = ev.changedTouches[0]
+    // Calc the right pos according to the touch screen
+    pos = {
+      x: ev.pageX - ev.target.offsetLeft - ev.target.clientLeft,
+      y: ev.pageY - ev.target.offsetTop - ev.target.clientTop,
+    }
+  }
+  return pos
+}
+
 function handleCanvasInteractionStart(ev) {
   ev.preventDefault()
-  const { type, touches, offsetX, offsetY } = ev
+  const { type } = ev
+  const { x, y } = getEvPos(ev)
 
   gIsTouchActive = type === 'touchstart'
 
-  const rect = gElCanvas.getBoundingClientRect()
-  const scaleX = gElCanvas.width / rect.width
-  const scaleY = gElCanvas.height / rect.height
+  gDraggingLineIdx = findLineAtPosition(x, y)
+  if (gDraggingLineIdx === -1) return
+  gDraggingActive = true
 
-  const interactionX = gIsTouchActive ? touches[0].clientX * scaleX : offsetX
-  const interactionY = gIsTouchActive ? touches[0].clientY * scaleY : offsetY
-
-  gDraggingLineIdx = findLineAtPosition(interactionX, interactionY)
+  gStartPos = { x, y }
 
   gElCanvas.addEventListener(
     gIsTouchActive ? 'touchmove' : 'mousemove',
@@ -86,31 +74,27 @@ function handleCanvasInteractionStart(ev) {
   )
 }
 
+function handleCanvasInteractionMove(ev) {
+  if (!gDraggingActive) return
+
+  const { x, y } = getEvPos(ev)
+  const dx = x - gStartPos.x
+  const dy = y - gStartPos.y
+
+  handleInteractionMove(dx, dy)
+  gStartPos.x = x
+  gStartPos.y = y
+
+  renderMeme()
+}
+
 function findLineAtPosition(x, y) {
-  console.log('x', x)
-  console.log('y', y)
   const memeLines = getLines()
 
   return memeLines.findIndex(line => {
     const { x: bx, y: by, width, height } = line.boundingBox
     return x >= bx && x <= bx + width && y >= by && y <= by + height
   })
-}
-
-function handleCanvasInteractionMove(ev) {
-  const { touches } = ev
-  ev.preventDefault()
-
-  const rect = gElCanvas.getBoundingClientRect()
-  const scaleX = gElCanvas.width / rect.width
-  const scaleY = gElCanvas.height / rect.height
-
-  const moveX = gIsTouchActive ? touches[0].clientX * scaleX : ev.offsetX
-  const moveY = gIsTouchActive ? touches[0].clientY * scaleY : ev.offsetY
-
-  handleInteractionMove(moveX, moveY)
-
-  renderMeme()
 }
 
 function handleInteractionMove(moveX, moveY) {
@@ -120,13 +104,15 @@ function handleInteractionMove(moveX, moveY) {
   const { boundingBox, align } = line
 
   if (line.sticker) {
-    boundingBox.x = moveX
-    boundingBox.y = moveY
+    boundingBox.x += moveX
+    boundingBox.y += moveY
   } else {
     line.prevAlign = align
     line.align = 'left'
-    line.x = moveX
-    line.y = moveY
+    line.x += moveX
+    line.y += moveY
+    boundingBox.x += moveX
+    boundingBox.y += moveY
   }
 }
 
@@ -233,6 +219,38 @@ function renderText(line, i, meme) {
 
   const isSelected = i === meme.selectedLineIdx
   drawText(line, isSelected)
+}
+
+function renderStickers() {
+  const stickers = getStickers()
+
+  const stickersHtml = stickers
+    .map(
+      (sticker, idx) =>
+        `<img src="${sticker.url}" alt="" onclick="onAddSticker(${idx})">`
+    )
+    .join('')
+
+  setElHtml('.stickers', stickersHtml)
+}
+
+function onAddSticker(stickerIdx) {
+  const sticker = getSelectedSticker(stickerIdx)
+
+  const newStickerLine = {
+    sticker: true,
+    url: sticker.url,
+    boundingBox: {
+      x: 150,
+      y: 150,
+      width: 50,
+      height: 50,
+    },
+  }
+
+  addStickerLine(newStickerLine)
+  updateSelectedLine()
+  renderMeme()
 }
 
 function coverCanvasWithImg(elImg) {
