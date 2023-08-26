@@ -1,7 +1,7 @@
 'use strict'
 
 function onImgInput(ev) {
-  loadImageFromInput(ev, renderImg)
+  loadImageFromInput(ev, drawImg)
 }
 
 function loadImageFromInput(ev) {
@@ -13,7 +13,7 @@ function loadImageFromInput(ev) {
 
     img.onload = () => {
       gImgs.push({
-        id: '19',
+        id: makeId(),
         url: img.src,
         keywords: ['random'],
       })
@@ -23,6 +23,6 @@ function loadImageFromInput(ev) {
   reader.readAsDataURL(ev.target.files[0])
 }
 
-function renderImg(img) {
+function drawImg(img) {
   gCtx.drawImage(img, 0, 0, gElCanvas.width, gElCanvas.height)
 }

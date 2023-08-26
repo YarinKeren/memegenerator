@@ -3,7 +3,6 @@
 let gElCanvas
 let gCtx
 let gDraggingLineIdx
-
 let gIsTouchActive = false
 let gStartPos
 let gDraggingActive = false

@@ -138,11 +138,13 @@ let gKeywordSearchCountMap = {
 let gFilterBy = ''
 
 function getImgs() {
-  if (gFilterBy === '') return gImgsGallery
+  if (gFilterBy === '') {
+    return gImgsGallery
+  }
 
-  return gImgsGallery.filter((img) => {
-    return img.keywords.some((keyword) => keyword.includes(gFilterBy))
-  })
+  return gImgsGallery.filter(img =>
+    img.keywords.some(keyword => keyword.includes(gFilterBy))
+  )
 }
 
 function getSearchCountMap() {

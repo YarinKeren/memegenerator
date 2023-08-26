@@ -86,19 +86,18 @@ function setLang(lang) {
 }
 
 function doTrans() {
-  const els = document.querySelectorAll('[data-trans]')
-  els.forEach((el) => {
+  const els = document.getEls('[data-trans]')
+  els.forEach(el => {
     const transKey = el.dataset.trans
-    const transTxt = getTrans(transKey)
-    if (el.placeholder) el.placeholder = transTxt
-    else el.innerText = transTxt
+    const transText = getTranslation(transKey)
+    if (el.placeholder) el.placeholder = transText
+    else el.innerText = transText
   })
 }
 
 function getTrans(transKey) {
-  const transMap = gTrans[transKey] // {'en':,'he':}
+  const transMap = gTrans[transKey]
   if (!transMap) return 'UNKNOWN'
-  let transTxt = transMap[gCurrLang]
-  if (!transTxt) transTxt = transMap.en
-  return transTxt
+  const transText = transMap[gCurrLang] || transMap.en
+  return transText
 }
