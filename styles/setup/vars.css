@@ -7,11 +7,11 @@
   --lightThemeColor: aliceblue;
   --gradientPrimary: linear-gradient(
     90deg,
-    rgba(15, 155, 179, 1) 0%,
-    rgba(33, 172, 145, 1) 57%,
-    rgba(48, 187, 115, 1) 100%
+    rgba(179, 15, 47, 1) 0%,
+    rgba(150, 29, 109, 1) 54%,
+    rgba(251, 95, 212, 1) 100%
   );
-  --gradientBackground: #30bb73;
+  --gradientBackground: #b30f2f;
   --gradientBackground-2: #0f9bb3;
 
   /* layout */

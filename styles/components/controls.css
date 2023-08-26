@@ -1,8 +1,7 @@
 .controls {
   place-self: center;
-  display: flex;
+
   flex-direction: column;
-  justify-content: space-around;
   align-items: center;
   background-color: var(--bgPrimary);
   border-radius: 30px;
@@ -49,11 +48,9 @@
 }
 
 .mid-buttons {
-  display: flex;
-  justify-content: space-around;
   flex-wrap: wrap;
   gap: 5px;
-  background-color: #19a59f;
+  background-color: rgb(215, 70, 167);
   padding: 10px;
   border-radius: 10px;
 }
@@ -79,11 +76,9 @@
 .controls .stickers {
   background-color: var(--lightThemeColor);
   border-radius: 20px;
-  padding: 20px;
-
-  display: flex;
-  justify-content: space-around;
+  padding: 10px 20px;
 }
 .controls .stickers img {
+  width: 20%;
   cursor: pointer;
 }

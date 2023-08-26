@@ -86,10 +86,10 @@ function setLang(lang) {
 }
 
 function doTrans() {
-  const els = document.getEls('[data-trans]')
+  const els = getEls('[data-trans]')
   els.forEach(el => {
     const transKey = el.dataset.trans
-    const transText = getTranslation(transKey)
+    const transText = getTrans(transKey)
     if (el.placeholder) el.placeholder = transText
     else el.innerText = transText
   })

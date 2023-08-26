@@ -1,3 +1,11 @@
 .hidden {
   display: none;
 }
+
+.flex {
+  display: flex;
+}
+
+.space-around {
+  justify-content: space-around;
+}

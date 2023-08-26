@@ -103,7 +103,7 @@
             <canvas width="200" height="200"></canvas>
           </div>
 
-          <article class="controls">
+          <article class="controls flex space-around">
             <input
               type="text"
               class="text-input"
@@ -123,7 +123,7 @@
               </button>
             </div>
 
-            <div class="mid-buttons">
+            <div class="mid-buttons flex space-around">
               <button class="btn" onclick="onFontSizeChange(1)">
                 <img src="styles/img/text-increase.svg" alt="" />
               </button>
@@ -159,7 +159,7 @@
                 />
               </button>
             </div>
-            <div class="stickers"></div>
+            <div class="stickers flex space-around"></div>
 
             <div class="share-buttons">
               <div class="tooltip">
@@ -204,12 +204,12 @@
       </section>
       <!--Close Main Layout-->
     </main>
-    <script src="js/services/i18nService.js"></script>
     <script src="js/services/uploadFromLocalService.js"></script>
     <script src="js/services/utilService.js"></script>
     <script src="js/services/galleryService.js"></script>
     <script src="js/services/memeService.js"></script>
     <script src="js/services/shareService.js"></script>
+    <script src="js/services/i18nService.js"></script>
     <script src="js/controllers/savedController.js"></script>
     <script src="js/controllers/mainController.js"></script>
     <script src="js/controllers/memeController.js"></script>
